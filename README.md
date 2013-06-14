@@ -57,11 +57,11 @@ while the last line contains the eigenvalues of the matrix.
 
 Snapshots
 -
-![alt text](https://dl.dropboxusercontent.com/u/1056837/TenVis/imgs/5.PNG"")
-![alt text](https://dl.dropboxusercontent.com/u/1056837/TenVis/imgs/6.PNG"")
-![alt text](https://dl.dropboxusercontent.com/u/1056837/TenVis/imgs/compositecolor-Karcher.PNG"")
-![alt text](https://dl.dropboxusercontent.com/u/1056837/TenVis/imgs/detLpY.PNG"")
-![alt text](https://dl.dropboxusercontent.com/u/1056837/TenVis/imgs/LPSGeoAVERA.PNG"")
+![alt text](https://dl.dropboxusercontent.com/u/1056837/TenVis/imgs/5.PNG "Brain1")
+![alt text](https://dl.dropboxusercontent.com/u/1056837/TenVis/imgs/6.PNG "Brain2")
+![alt text](https://dl.dropboxusercontent.com/u/1056837/TenVis/imgs/compositecolor-Karcher.PNG "3 tensors interpolation")
+![alt text](https://dl.dropboxusercontent.com/u/1056837/TenVis/imgs/detLpY.PNG "Brain DTI slice 1")
+![alt text](https://dl.dropboxusercontent.com/u/1056837/TenVis/imgs/LPSGeoAVERA.PNG "Brain DTI slice 2")
 
 Acknowledgements
 -
