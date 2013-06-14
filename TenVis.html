@@ -32,32 +32,11 @@
 				font: 10pt bold,"Vollkorn";
 				color: #bbb;
 			}
-			#byte_content {
-				margin: 5px 0;
-				max-height: 100px;
-				overflow-y: auto;
-				overflow-x: hidden;
-			}
-			#byte_range {
-				margin-top: 5px;
-			}
-			.info {
-				position: absolute;
-				background-color: black;
-				opacity: 0.8;
-				color: white;
-				text-align: center;
-				top: 0px;
-				width: 100%;
-			}
 			
 			#generationMsg{
 				color: white;
 			}
 
-			.info a {
-				color: #00ffff;
-			}
 		</style>
 	</head>
 	<script>
@@ -110,7 +89,6 @@
 	for (var i = 0; i < length; i++) {
 		readBlob2(files[i]);
 	}
-	//readBlob2(files[1]);
   }
 
   function handleDragOver(evt) {
@@ -129,10 +107,6 @@
 		<div id="container"></div>
 
 		<script>
-
-			
-			
-			
 			/*GLOBALS*/
 			var container, stats;
 			var camera, controls, scene, renderer;
@@ -143,9 +117,7 @@
 			var floor;
 			var colorMapping = 'Default';
 
-
 			var mouse = new THREE.Vector2();
-			var offset = new THREE.Vector3( 10, 10, 10 );
 
 			init();
 			animate();
@@ -281,17 +253,13 @@
 		} );
 		
 		gui.add( params, 'floorVisible' ).onChange( togglePlane );
-		//console.log(gui.add( params, 'Colormap', [ 'Default', 'Determinant', 'Fractional An.', 'LPS', 'Experimental'] ));
 		
 		gui.add( params, 'Colormap', [ 'Default', 'NonAbs', 'Composition','Determinant', 'FA', 'LPS', 'Experimental'] ).onChange( function (value){
 			colorMapping = value;
-			//console.log(colorMapping);
 		});
 		
 		
 		function togglePlane() {
-			console.log(params.floorVisible);
-			console.log(floor);
 			if ( params.floorVisible === false) {
 				if ( floor ) { floor.visible = false;	}
 			} else if ( floor ) {
@@ -308,8 +276,6 @@
 				// floor.rotation.x = Math.PI / 2;
 				scene.add(floor);
 			}	
-			console.log(params.floorVisible);
-			console.log(floor);
 		}
 		
 				
@@ -561,9 +527,7 @@
 					ellipsoid.position.copy( position );
 					rotM.transpose();
 					rotation.setEulerFromRotationMatrix( rotM, 'ZYX' );
-					console.log(rotation);
 					ellipsoid.rotation.copy(rotation);
-					console.log(ellipsoid.rotation);
 					
 					//make all spheres
 					/*scale.x = 10;
