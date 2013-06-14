@@ -32,7 +32,7 @@ Drag and drop a file containing:
   - Tensors eigenvalues
 
 Example:
-`57,94,23
+57,94,23
 1,0,0
 0,1,0
 0,0,1
@@ -47,13 +47,13 @@ Example:
 1,0,0
 0,0,1
 10,3,3  
-`  
+  
 
 A .txt file containing the above data (15 text lines + 1 white line in this case) should display 3 ellipsoids aligned with the x, y and z axis.  
-For each tensor, the first line contains the coordinates. The next three lines contain the rotation matrix 
- XX, XY, XZ
- YX, YY, YZ
- ZX, ZY, ZZ
+For each tensor, the first line contains the coordinates. The next three lines contain the rotation matrix   
+ XX, XY, XZ  
+ YX, YY, YZ  
+ ZX, ZY, ZZ  
 while the last line contains the eigenvalues of the matrix.
 
 Acknowledgements
