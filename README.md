@@ -1,6 +1,5 @@
 TenVis
-======
-A tensor viewer.  
+====== 
 TenVis can help you analyze 3x3 matrices properties using ellipsoids.  
 Different color mappings are given.
 
@@ -17,10 +16,10 @@ TenVis uses WebGL and mostly the amazing [Three.js] library.
 Installation
 --------------
 
-No installation needed. Just click the `TenVis.html` file and it works automagically. Things should work on any WebGL enabled browser, wich means no IE support for the time being.
+No installation needed! Just click the `TenVis.html` file and it works automagically. Things should work on any WebGL enabled browser, wich means no IE support for the time being.
 
 How to use
-===
+-
 
 Drag and drop a file containing:
 
@@ -65,7 +64,7 @@ Snapshots
 
 Acknowledgements
 -
-I would like to thank Professor [Bruno Iannazzo] from UNIPG who helped designing and testing TenVis, and [Gabriele di Bari] whose WebGL expertise 
+I would like to thank Professor [Bruno Iannazzo] from UNIPG who helped testing and debugging TenVis, and [Gabriele di Bari] whose WebGL expertise 
 saved me from some weird situations.
 
 License
@@ -74,6 +73,7 @@ License
 MIT
 
 *Free Software, Fuck Yeah!*
+
   [Three.js]: http://threejs.org/
   [Gabriele di Bari]:https://github.com/Gabriele91
   [Bruno Iannazzo]:http://poisson.phc.unipi.it/~maxreen/bruno/   
