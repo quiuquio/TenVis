@@ -1,0 +1,134 @@
+<!doctype html>
+<!-- The Time Machine GitHub pages theme was designed and developed by Jon Rohan, on Feb 7, 2012. -->
+<!-- Follow him for fun. http://twitter.com/jonrohan. Tail his code on http://github.com/jonrohan -->
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <link rel="stylesheet" href="stylesheets/stylesheet.css" media="screen"/>
+  <link rel="stylesheet" href="stylesheets/pygment_trac.css"/>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script type="text/javascript" src="javascripts/script.js"></script>
+
+  <title>Tenvis</title>
+  <meta name="description" content="A Tensor Viewer">
+
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+</head>
+
+<body>
+
+  <div class="wrapper">
+    <header>
+      <h1 class="title">Tenvis</h1>
+    </header>
+    <div id="container">
+      <p class="tagline">A Tensor Viewer</p>
+      <div id="main" role="main">
+        <div class="download-bar">
+        <div class="inner">
+          <a href="https://github.com/quiuquio/TenVis/tarball/master" class="download-button tar"><span>Download</span></a>
+          <a href="https://github.com/quiuquio/TenVis/zipball/master" class="download-button zip"><span>Download</span></a>
+          <a href="https://github.com/quiuquio/TenVis" class="code">View Tenvis on GitHub</a>
+        </div>
+        <span class="blc"></span><span class="trc"></span>
+        </div>
+        <article class="markdown-body">
+          <h1>
+<a name="tenvis" class="anchor" href="#tenvis"><span class="octicon octicon-link"></span></a>TenVis</h1>
+
+<p>TenVis can help you analyze 3x3 matrices properties using ellipsoids.<br>
+Different color mappings are given.</p>
+
+<h2>
+<a name="version" class="anchor" href="#version"><span class="octicon octicon-link"></span></a>Version</h2>
+
+<p>0.1</p>
+
+<h2>
+<a name="tech" class="anchor" href="#tech"><span class="octicon octicon-link"></span></a>Tech</h2>
+
+<p>TenVis uses WebGL and mostly the amazing <a href="http://threejs.org/">Three.js</a> library. </p>
+
+<h2>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>No installation needed. Just click the <code>TenVis.html</code> file and it works automagically. Things should work on any WebGL enabled browser, wich means no IE support for the time being.</p>
+
+<h2>
+<a name="how-to-use" class="anchor" href="#how-to-use"><span class="octicon octicon-link"></span></a>How to use</h2>
+
+<p>Drag and drop a file containing:</p>
+
+<ul>
+<li>Tensors coordinates in space</li>
+<li>Tensors eigenvectors ( for orientation )</li>
+<li>Tensors eigenvalues</li>
+</ul><h2>
+<a name="example" class="anchor" href="#example"><span class="octicon octicon-link"></span></a>Example:</h2>
+
+<p>57,94,23<br>
+1,0,0<br>
+0,1,0<br>
+0,0,1<br>
+10,3,3<br>
+77,94,23<br>
+0,1,0<br>
+0,0,1<br>
+1,0,0<br>
+10,3,3<br>
+97,94,23<br>
+0,1,0<br>
+1,0,0<br>
+0,0,1<br>
+10,3,3   </p>
+
+<p>A .txt file containing the above data (15 text lines + 1 white line in this case) should display 3 ellipsoids aligned with the x, y and z axis.<br>
+For each tensor, the first line contains the coordinates. The next three lines contain the rotation matrix<br>
+ XX, XY, XZ<br>
+ YX, YY, YZ<br>
+ ZX, ZY, ZZ<br>
+while the last line contains the eigenvalues of the matrix.</p>
+
+<h2>
+<a name="snapshots" class="anchor" href="#snapshots"><span class="octicon octicon-link"></span></a>Snapshots</h2>
+
+<p><img src="https://dl.dropboxusercontent.com/u/1056837/TenVis/imgs/5.PNG" alt="alt text" title="Brain1"><img src="https://dl.dropboxusercontent.com/u/1056837/TenVis/imgs/6.PNG" alt="alt text" title="Brain2"><img src="https://dl.dropboxusercontent.com/u/1056837/TenVis/imgs/compositecolor-Karcher.PNG" alt="alt text" title="3 tensors interpolation"><img src="https://dl.dropboxusercontent.com/u/1056837/TenVis/imgs/detLpY.PNG" alt="alt text" title="Brain DTI slice 1"><img src="https://dl.dropboxusercontent.com/u/1056837/TenVis/imgs/LPSGeoAVERA.PNG" alt="alt text" title="Brain DTI slice 2"></p>
+
+<h2>
+<a name="acknowledgements" class="anchor" href="#acknowledgements"><span class="octicon octicon-link"></span></a>Acknowledgements</h2>
+
+<p>I would like to thank Professor <a href="http://poisson.phc.unipi.it/%7Emaxreen/bruno/">Bruno Iannazzo</a> from UNIPG who helped designing and testing TenVis, and <a href="https://github.com/Gabriele91">Gabriele di Bari</a> whose WebGL expertise 
+saved me from some weird situations.</p>
+
+<h2>
+<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h2>
+
+<p>MIT</p>
+
+<p><em>Free Software, Fuck Yeah!</em></p>
+        </article>
+      </div>
+    </div>
+    <footer>
+      <div class="owner">
+      <p><a href="https://github.com/quiuquio" class="avatar"><img src="https://secure.gravatar.com/avatar/d4dc2463e718247be979e624b9c915e2?s=30&amp;d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-user-420.png" width="48" height="48"/></a> <a href="https://github.com/quiuquio">quiuquio</a> maintains <a href="https://github.com/quiuquio/TenVis">Tenvis</a></p>
+
+
+      </div>
+      <div class="creds">
+        <small>This page generated using <a href="https://pages.github.com/">GitHub Pages</a><br/>theme by <a href="http://twitter.com/jonrohan/">Jon Rohan</a></small>
+      </div>
+    </footer>
+  </div>
+  <div class="current-section">
+    <a href="#top">Scroll to top</a>
+    <a href="https://github.com/quiuquio/TenVis/tarball/master" class="tar">tar</a><a href="https://github.com/quiuquio/TenVis/zipball/master" class="zip">zip</a><a href="" class="code">source code</a>
+    <p class="name"></p>
+  </div>
+
+  
+</body>
+</html>
