@@ -1,10 +1,7 @@
 TenVis
 ======
-
-A tensor viewer
-
-
-TenVis can help you analyze 3x3 matrices properties using ellipsoids.
+A tensor viewer.  
+TenVis can help you analyze 3x3 matrices properties using ellipsoids.  
 Different color mappings are given.
 
 Version
@@ -31,22 +28,22 @@ Drag and drop a file containing:
   - Tensors eigenvectors ( for orientation )
   - Tensors eigenvalues
 
-Example:
-57,94,23
-1,0,0
-0,1,0
-0,0,1
-10,3,3
-77,94,23
-0,1,0
-0,0,1
-1,0,0
-10,3,3
-97,94,23
-0,1,0
-1,0,0
-0,0,1
+Example:  
+57,94,23  
+1,0,0  
+0,1,0  
+0,0,1  
 10,3,3  
+77,94,23  
+0,1,0  
+0,0,1  
+1,0,0  
+10,3,3  
+97,94,23  
+0,1,0  
+1,0,0  
+0,0,1  
+10,3,3   
   
 
 A .txt file containing the above data (15 text lines + 1 white line in this case) should display 3 ellipsoids aligned with the x, y and z axis.  
