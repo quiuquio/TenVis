@@ -34,8 +34,11 @@
         <h1>
 <a name="tenvis" class="anchor" href="#tenvis"><span class="octicon octicon-link"></span></a>TenVis</h1>
 
-<p>TenVis can help you analyze 3x3 matrices properties using ellipsoids.<br>
-Different color mappings are given.</p>
+<p>TenVis can help you analyze tensors or 3x3 matrices using ellipsoids.<br>
+Different color mappings are given.<br>
+This project was created as part of my Computer Science thesis work and is mostly aimed on 
+<a name="DTI" href="http://en.wikipedia.org/wiki/Diffusion_MRI">Diffusion Tensor Imaging</a> (DTI) visualization.
+</p>
 
 <h2>
 <a name="version" class="anchor" href="#version"><span class="octicon octicon-link"></span></a>Version</h2>
@@ -50,7 +53,7 @@ Different color mappings are given.</p>
 <h2>
 <a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
 
-<p>No installation needed! Just click the <code>TenVis.html</code> file and it works automagically. Things should work on any WebGL enabled browser, wich means no IE support for the time being.</p>
+<p>No installation needed, it's all javascript! Just click the <code>TenVis.html</code> file and it works automagically. Things should work on any WebGL enabled browser, wich means no IE support for the time being.</p>
 
 <h2>
 <a name="how-to-use" class="anchor" href="#how-to-use"><span class="octicon octicon-link"></span></a>How to use</h2>
@@ -86,7 +89,9 @@ For each tensor, the first line contains the coordinates. The next three lines c
  XX, XY, XZ<br>
  YX, YY, YZ<br>
  ZX, ZY, ZZ<br>
-while the last line contains the eigenvalues of the matrix.</p>
+while the last line contains the eigenvalues of the matrix.<br>
+The eigenvalues should be ordered in descending order and the eigenvectors should be ordered accordingly.
+</p>
 
 <h2>
 <a name="snapshots" class="anchor" href="#snapshots"><span class="octicon octicon-link"></span></a>Snapshots</h2>
