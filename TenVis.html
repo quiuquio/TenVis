@@ -423,6 +423,12 @@
 												yx,	yy,	yz,	0,
 												zx,	zy,	zz,	0,
 												0,	0,	0,	1 );
+					/* It seems that Matrix are trully memorized as						
+						(xx, yx, zx, 0,
+						xy, yy, zy, 0,
+						xz, yz, zz, 0,
+						 0,  0,  0, 1)
+					*/
 					
 					temp2= lines[++i].split(',');
 					scale.x = parseFloat(temp2[0])*10 + 1;
@@ -522,10 +528,9 @@
 
 					color.setRGB( r,g,b );
 					applyVertexColors( ellipsoid.geometry, color );
-
 					
 					ellipsoid.position.copy( position );
-					rotM.transpose();
+					rotM.transpose(); // see comment under declaration of rotM.
 					rotation.setEulerFromRotationMatrix( rotM, 'ZYX' );
 					ellipsoid.rotation.copy(rotation);
 					
