@@ -1,7 +1,8 @@
 TenVis
 ====== 
-TenVis can help you analyze 3x3 matrices properties using ellipsoids.  
+TenVis can help you analyze tensors or 3x3 matrices using ellipsoids.
 Different color mappings are given.
+This project was created as part of my Computer Science thesis work and is mostly aimed on Diffusion Tensor Imaging (DTI) visualization.
 
 Version
 -
@@ -11,12 +12,12 @@ Version
 Tech
 -----------
 
-TenVis uses WebGL and mostly the amazing [Three.js] library. 
+TenVis uses javascript, HTML5, WebGL and the amazing [Three.js] library. 
 
 Installation
 --------------
 
-No installation needed! Just click the `TenVis.html` file and it works automagically. Things should work on any WebGL enabled browser, wich means no IE support for the time being.
+No installation needed, it's all javascript! Just click the `TenVis.html` file and it works automagically. Things should work on any WebGL enabled browser, wich means no IE support for the time being.
 
 How to use
 -
@@ -72,7 +73,6 @@ License
 
 MIT
 
-*Free Software, Fuck Yeah!*
 
   [Three.js]: http://threejs.org/
   [Gabriele di Bari]:https://github.com/Gabriele91
