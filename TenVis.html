@@ -226,6 +226,8 @@
 		this.Colormap = 'Default';
 		this.resol = 4;
 	};
+	
+	
 	window.onload = function() {
 		var params = new parameters();
 		var gui = new dat.GUI();
@@ -265,7 +267,7 @@
 		gui.add( params, 'floorVisible' ).onChange( togglePlane );
 		
 
-		gui.add( params, 'resol' ).onChange( setResolution );
+		gui.add( params, 'resol' ).step(1).onChange( setResolution );
 		gui.add( params, 'Ellipsoids').onChange( toggleEllipsoids );
 		gui.add( params, 'Particles').onChange( toggleParticles );
 		
@@ -279,10 +281,7 @@
 				REST = params.resol;
 				RESP = REST*2;
 			}
-		}
-     
-		
-		
+		}    		
 		
 		function toggleEllipsoids() {
 			if (params.Ellispsoid != drawEllipsoids){
@@ -295,22 +294,7 @@
 					drawParticles = params.Particles;
 			}
 		}
-		
-		
-		
-		function toggleEllipsoids() {
-			if (params.Ellispsoid != drawEllipsoids){
-					drawEllipsoids = params.Ellispsoid;
-			}
-		}
-		
-		function toggleParticles() {
-			if (params.Particles != drawParticles){
-					drawParticles = params.Particles;
-			}
-		}
-		
-		
+				
 		function togglePlane() {
 			if ( params.floorVisible === false) {
 				if ( floor ) { floor.visible = false;	}
