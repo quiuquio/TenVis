@@ -114,14 +114,13 @@
 	//Merged mesh group
 	var mergedGeo	= new THREE.Geometry();
 	var radius = 1;
-	var geom = new THREE.SphereGeometry( radius, 7, 3 );
 	
 	//GUI variables
 	var floor;
 	var drawEllipsoids = true;
 	var drawParticles = false;
 	var colorMapping = 'Default';
-	var resolution = 'Automatic';
+	var REST = 4, RESP = REST*2;
 
 	var mouse = new THREE.Vector2();
 	
@@ -225,6 +224,7 @@
 		this.Ellipsoids = true;
 		this.Particles = false;
 		this.Colormap = 'Default';
+		this.resol = 4;
 	};
 	window.onload = function() {
 		var params = new parameters();
@@ -264,6 +264,8 @@
 		
 		gui.add( params, 'floorVisible' ).onChange( togglePlane );
 		
+
+		gui.add( params, 'resol' ).onChange( setResolution );
 		gui.add( params, 'Ellipsoids').onChange( toggleEllipsoids );
 		gui.add( params, 'Particles').onChange( toggleParticles );
 		
@@ -271,6 +273,28 @@
 		gui.add( params, 'Colormap', [ 'Default', 'NonAbs', 'Composition','Determinant', 'FA', 'LPS', 'Experimental'] ).onChange( function (value){
 			colorMapping = value;
 		});
+		
+		function setResolution() {
+			if ( params.resol != REST ) {
+				REST = params.resol;
+				RESP = REST*2;
+			}
+		}
+     
+		
+		
+		
+		function toggleEllipsoids() {
+			if (params.Ellispsoid != drawEllipsoids){
+					drawEllipsoids = params.Ellispsoid;
+			}
+		}
+		
+		function toggleParticles() {
+			if (params.Particles != drawParticles){
+					drawParticles = params.Particles;
+			}
+		}
 		
 		
 		
@@ -398,16 +422,18 @@
 		if (drawParticles===true){
 			drawBrainParticles(lines, nMatrices, generated);
 		}
-	}
+
+	}	
 	
-	function getPosition(){
-	
-	}
+
 	
 	function drawBrainEllipsoids(lines, nMatrices, generated, maxDet){
 		var position = new THREE.Vector3();
 		radius = 1;
 		var rotation = new THREE.Vector3();
+
+		var geom = new THREE.SphereGeometry( radius, RESP, REST ); 
+
 		//var geom = new THREE.SphereGeometry( radius,8, 4 );
 		var ellipsoid = new THREE.Mesh( geom );
 		
@@ -427,7 +453,7 @@
 		for ( var i = first; i < (first+5000) && nMatrices >  generated; i++, generated++ ) {	
 			/*	SETTING POSITION	*/
 			/*
-				TODO: centrare in modo automatico, -64,-64,-24 è specifico per un dataset,
+				TODO: centrare in modo automatico, -64,-64,-24 Ã¨ specifico per un dataset,
 				cambiare a seconda del caso.
 			*/
 			temp2= lines[i].split(',');
