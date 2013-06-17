@@ -225,6 +225,8 @@
 		this.Particles = false;
 		this.Colormap = 'Default';
 		this.resol = 4;
+		
+		this.bgColor = "#222222";
 	};
 	
 	
@@ -271,10 +273,17 @@
 		gui.add( params, 'Ellipsoids').onChange( toggleEllipsoids );
 		gui.add( params, 'Particles').onChange( toggleParticles );
 		
+		gui.addColor(params, 'bgColor').onChange( changeBackground );
+		
 		
 		gui.add( params, 'Colormap', [ 'Default', 'NonAbs', 'Composition','Determinant', 'FA', 'LPS', 'Experimental'] ).onChange( function (value){
 			colorMapping = value;
 		});
+		
+		function changeBackground() {
+		   document.body.style.background = params.bgColor;
+		}
+		
 		
 		function setResolution() {
 			if ( params.resol != REST ) {
