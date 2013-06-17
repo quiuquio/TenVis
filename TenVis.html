@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>TenVis</title>
+		<title>The D Viewer - Ellipsoids</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<script src="js/three.min.js"></script>
@@ -17,7 +17,7 @@
 		<style>
 			body {
 				font-family: Monospace;
-				background-color: #222222;
+				background-color: #cccccc; 
 				margin: 0px;
 				padding: 0px:
 				overflow: hidden;
@@ -32,11 +32,32 @@
 				font: 10pt bold,"Vollkorn";
 				color: #bbb;
 			}
+			#byte_content {
+				margin: 5px 0;
+				max-height: 100px;
+				overflow-y: auto;
+				overflow-x: hidden;
+			}
+			#byte_range {
+				margin-top: 5px;
+			}
+			.info {
+				position: absolute;
+				background-color: black;
+				opacity: 0.8;
+				color: white;
+				text-align: center;
+				top: 0px;
+				width: 100%;
+			}
 			
 			#generationMsg{
 				color: white;
 			}
 
+			.info a {
+				color: #00ffff;
+			}
 		</style>
 	</head>
 	<script>
@@ -89,6 +110,7 @@
 	for (var i = 0; i < length; i++) {
 		readBlob2(files[i]);
 	}
+	//readBlob2(files[1]);
   }
 
   function handleDragOver(evt) {
@@ -107,22 +129,23 @@
 		<div id="container"></div>
 
 		<script>
+
+			
+			
+			
 			/*GLOBALS*/
 			var container, stats;
 			var camera, controls, scene, renderer;
-			
 			//Merged mesh group
 			var mergedGeo	= new THREE.Geometry();
 			var radius = 1;
 			var geom = new THREE.SphereGeometry( radius,7, 3 );
-			
-			//GUI variables
 			var floor;
 			var colorMapping = 'Default';
+			var REST = 4, RESP = REST*2;
 
 			var mouse = new THREE.Vector2();
-			
-			/*END OF GLOBALS*/
+			var offset = new THREE.Vector3( 10, 10, 10 );
 
 			init();
 			animate();
@@ -222,6 +245,7 @@
 		this.targetZ = 0;
 		this.floorVisible = false;
 		this.Colormap = 'Default';
+		this.resol = 4;
 	};
 	window.onload = function() {
 		var params = new parameters();
@@ -229,44 +253,52 @@
 		
 		gui.remember(params);
 		
-		var camFolder = gui.addFolder('Camera');
-		
-		camFolder.add( params, 'cameraX', -5000, 5000).step(1).onChange( function( value ){ 
+		gui.add( params, 'cameraX', -5000, 5000).step(1).onChange( function( value ){ 
 			//controls.target.set(0, 0, 0);
 			camera.up.set(0, 1, 0);
 			camera.position.x = value;
 		} );
-		camFolder.add( params, 'cameraY', -5000, 5000 ).step(1).onChange( function( value ){
+		gui.add( params, 'cameraY', -5000, 5000 ).step(1).onChange( function( value ){
 			//controls.target.set(0, 0, 0);
 			camera.up.set(0, 1, 0);
 			camera.position.y = value;
 		} );
-		camFolder.add( params, 'cameraZ', -5000, 5000 ).step(1).onChange( function( value ){
+		gui.add( params, 'cameraZ', -5000, 5000 ).step(1).onChange( function( value ){
 			//controls.target.set(0, 0, 0);
 			camera.up.set(0, 1, 0);			
 			camera.position.z = value;
 		} );
-		camFolder.add( params, 'targetX', -1000, 1000 ).step(1).onChange( function( value ){
+		gui.add( params, 'targetX', -1000, 1000 ).step(1).onChange( function( value ){
 			controls.target.x = value;
 			camera.up.set(0, 1, 0);			
 		} );
-		camFolder.add( params, 'targetY', -1000, 1000 ).step(1).onChange( function( value ){ 
+		gui.add( params, 'targetY', -1000, 1000 ).step(1).onChange( function( value ){ 
 			controls.target.y = value;
 			camera.up.set(0, 1, 0);
 		} );
-		camFolder.add( params, 'targetZ', -1000, 1000 ).step(1).onChange( function( value ){ 
+		gui.add( params, 'targetZ', -1000, 1000 ).step(1).onChange( function( value ){ 
 			controls.target.z = value;
 			camera.up.set(0, 1, 0);
 		} );
-		
+		gui.add( params, 'resol' ).onChange( setResolution );
 		gui.add( params, 'floorVisible' ).onChange( togglePlane );
+		//console.log(gui.add( params, 'Colormap', [ 'Default', 'Determinant', 'Fractional An.', 'LPS', 'Experimental'] ));
 		
 		gui.add( params, 'Colormap', [ 'Default', 'NonAbs', 'Composition','Determinant', 'FA', 'LPS', 'Experimental'] ).onChange( function (value){
 			colorMapping = value;
+			//console.log(colorMapping);
 		});
 		
+		function setResolution() {
+			if ( params.resol != REST ) {
+				REST = params.resol;
+				RESP = REST*2;
+			}
+		}
 		
 		function togglePlane() {
+			console.log(params.floorVisible);
+			console.log(floor);
 			if ( params.floorVisible === false) {
 				if ( floor ) { floor.visible = false;	}
 			} else if ( floor ) {
@@ -283,6 +315,8 @@
 				// floor.rotation.x = Math.PI / 2;
 				scene.add(floor);
 			}	
+			console.log(params.floorVisible);
+			console.log(floor);
 		}
 		
 				
@@ -376,7 +410,7 @@
 				var position = new THREE.Vector3();
 				radius = 1;
 				var rotation = new THREE.Vector3();
-				var geom = new THREE.SphereGeometry( radius,8, 4 );
+				var geom = new THREE.SphereGeometry( radius, RESP, REST ); 
 				var ellipsoid = new THREE.Mesh( geom );
 				
 				var color = new THREE.Color( 0xff0000 );
@@ -395,7 +429,7 @@
 				for ( var i = first; i < (first+5000) && nMatrices >  generated; i++, generated++ ) {	
 					/*	SETTING POSITION	*/
 					/*
-						TODO: centrare in modo automatico, -64,-64,-24 è specifico per un dataset,
+						TODO: centrare in modo automatico, -64,-64,-24 Ã¨ specifico per un dataset,
 						cambiare a seconda del caso.
 					*/
 					temp2= lines[i].split(',');
@@ -406,7 +440,7 @@
 					position.multiplyScalar(radius);
 					position.multiplyScalar(padding);
 					
-					/* Parsing Eigenvectors Matrix (rotation) */
+					/*	Parsing Eigenvectors Matrix (rotation)*/
 					temp2= lines[++i].split(',');
 					xx = parseFloat(temp2[0]);
 					xy = parseFloat(temp2[1]);
@@ -430,12 +464,6 @@
 												yx,	yy,	yz,	0,
 												zx,	zy,	zz,	0,
 												0,	0,	0,	1 );
-					/* It seems that Matrix4 are trully memorized as						
-						(xx, yx, zx, 0,
-						xy, yy, zy, 0,
-						xz, yz, zz, 0,
-						 0,  0,  0, 1)
-					*/
 					
 					temp2= lines[++i].split(',');
 					scale.x = parseFloat(temp2[0])*10 + 1;
@@ -470,8 +498,7 @@
 						v.normalize();
 						
 						//FRACTIONAL ANISOTROPY color mapping
-						l = scale;
-						ll = (l.x+l.y+l.z)/3;
+						ll = (L[0]+L[1]+L[2])/3;
 						fa = Math.sqrt(3*(Math.pow((L[0]-ll),2)+Math.pow((L[1]-ll),2)+Math.pow((L[2]-ll),2)));
 						fa = fa/Math.sqrt(2*(Math.pow(L[0],2)+Math.pow(L[1],2)+Math.pow(L[2],2)));
 						r = fa * Math.abs(v.x) + (1-fa);
@@ -536,11 +563,14 @@
 
 					color.setRGB( r,g,b );
 					applyVertexColors( ellipsoid.geometry, color );
+
 					
 					ellipsoid.position.copy( position );
-					rotM.transpose(); // see comment under declaration of rotM.
+					rotM.transpose();
 					rotation.setEulerFromRotationMatrix( rotM, 'ZYX' );
+					console.log(rotation);
 					ellipsoid.rotation.copy(rotation);
+					console.log(ellipsoid.rotation);
 					
 					//make all spheres
 					/*scale.x = 10;
