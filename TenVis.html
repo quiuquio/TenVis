@@ -102,112 +102,113 @@
   dropZone.addEventListener('dragover', handleDragOver, false);
   dropZone.addEventListener('drop', handleFileSelect, false);
 </script>
-		<span id="generationMsg"></span>
+<span id="generationMsg"></span>
 
-		<div id="container"></div>
+<div id="container"></div>
 
-		<script>
-			/*GLOBALS*/
-			var container, stats;
-			var camera, controls, scene, renderer;
-			
-			//Merged mesh group
-			var mergedGeo	= new THREE.Geometry();
-			var radius = 1;
-			var geom = new THREE.SphereGeometry( radius,7, 3 );
-			
-			//GUI variables
-			var floor;
-			var colorMapping = 'Default';
+<script>
+	/*GLOBALS*/
+	var container, stats;
+	var camera, controls, scene, renderer;
+	
+	//Merged mesh group
+	var mergedGeo	= new THREE.Geometry();
+	var radius = 1;
+	var geom = new THREE.SphereGeometry( radius, 7, 3 );
+	
+	//GUI variables
+	var floor;
+	var drawEllipsoids = true;
+	var drawParticles = false;
+	var colorMapping = 'Default';
+	var resolution = 'Automatic';
 
-			var mouse = new THREE.Vector2();
-			
-			/*END OF GLOBALS*/
+	var mouse = new THREE.Vector2();
+	
+	/*END OF GLOBALS*/
 
-			init();
-			animate();
+	init();
+	animate();
 
-			function init() {
+	function init() {
 
-				container = document.getElementById( "container" );
-				
-				// CAMERA
-				var SCREEN_WIDTH = window.innerWidth, SCREEN_HEIGHT = window.innerHeight;
-				var VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.1, FAR = 20000;
-				var span;
-				camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
-				camera.position.set(0, 0, 1500);									
+		container = document.getElementById( "container" );
+		
+		// CAMERA
+		var SCREEN_WIDTH = window.innerWidth, SCREEN_HEIGHT = window.innerHeight;
+		var VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.1, FAR = 20000;
+		var span;
+		camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
+		camera.position.set(0, 0, 1500);									
 
-				scene = new THREE.Scene();
-				
-				/*LIGHTS*/
-				scene.add( new THREE.AmbientLight( 0x222222 ) );
+		scene = new THREE.Scene();
+		
+		/*LIGHTS*/
+		scene.add( new THREE.AmbientLight( 0x222222 ) );
 
-				var light = new THREE.SpotLight( 0xffffff, 0.8 );
-				light.position.set( 0, 0, 3000 );
-				scene.add( light );
-				var light = new THREE.SpotLight( 0xffffff, 0.8 );
-				light.position.set( 0, 0, -3000 );
-				scene.add( light );
-				var light = new THREE.SpotLight( 0xffffff, 0.8 );
-				light.position.set( -2000, -2000, 0 );
-				scene.add( light );
-				var light = new THREE.SpotLight( 0xffffff, 0.8 );
-				light.position.set( 2000, 2000, 0 );
-				scene.add( light );
+		var light = new THREE.SpotLight( 0xffffff, 0.8 );
+		light.position.set( 0, 0, 3000 );
+		scene.add( light );
+		var light = new THREE.SpotLight( 0xffffff, 0.8 );
+		light.position.set( 0, 0, -3000 );
+		scene.add( light );
+		var light = new THREE.SpotLight( 0xffffff, 0.8 );
+		light.position.set( -2000, -2000, 0 );
+		scene.add( light );
+		var light = new THREE.SpotLight( 0xffffff, 0.8 );
+		light.position.set( 2000, 2000, 0 );
+		scene.add( light );
 
-				
+		
 
-				//projector = new THREE.Projector();
+		//projector = new THREE.Projector();
 
-				renderer = new THREE.WebGLRenderer( { 	antialias: true,
-														//preserveDrawingBuffer: true   // required to support .toDataURL()
-													 } );
-				//renderer.autoClear = false
-				//renderer.sortObjects = true;
-				//renderer.setFaceCulling(false);
-				renderer.setSize( window.innerWidth, window.innerHeight );
-				
-				//Premere 'p' per uno screenshot, ma preserveDrawingBuffer deve essere true.
-				THREEx.Screenshot.bindKey(renderer);
+		renderer = new THREE.WebGLRenderer( { 	antialias: true,
+												//preserveDrawingBuffer: true   // required to support .toDataURL()
+											 } );
+		//renderer.autoClear = false
+		//renderer.sortObjects = true;
+		//renderer.setFaceCulling(false);
+		renderer.setSize( window.innerWidth, window.innerHeight );
+		
+		//Premere 'p' per uno screenshot, ma preserveDrawingBuffer deve essere true.
+		THREEx.Screenshot.bindKey(renderer);
 
-				container.appendChild( renderer.domElement );
-				
-				/*CUSTOM*/
-				//scene.add( new THREE.AxisHelper(50) );
-				/*
-				// wireframe for xy-plane
-				var wireframeMaterial = new THREE.MeshBasicMaterial( { color: 0x000088, wireframe: true, side:THREE.DoubleSide } ); 
-				//var wireframeMaterial = new THREE.MeshBasicMaterial( { color: 0x000088, side:THREE.DoubleSide } ); 
-				var floorGeometry = new THREE.PlaneGeometry(1000,1000,10,10);
-				var floor = new THREE.Mesh(floorGeometry, wireframeMaterial);
-				floor.position.z = -0.01;
-				// rotate to lie in x-y plane
-				// floor.rotation.x = Math.PI / 2;
-				scene.add(floor);*/
-				
+		container.appendChild( renderer.domElement );
+		
+		/*CUSTOM*/
+		//scene.add( new THREE.AxisHelper(50) );
+		/*
+		// wireframe for xy-plane
+		var wireframeMaterial = new THREE.MeshBasicMaterial( { color: 0x000088, wireframe: true, side:THREE.DoubleSide } ); 
+		//var wireframeMaterial = new THREE.MeshBasicMaterial( { color: 0x000088, side:THREE.DoubleSide } ); 
+		var floorGeometry = new THREE.PlaneGeometry(1000,1000,10,10);
+		var floor = new THREE.Mesh(floorGeometry, wireframeMaterial);
+		floor.position.z = -0.01;
+		// rotate to lie in x-y plane
+		// floor.rotation.x = Math.PI / 2;
+		scene.add(floor);*/
+		
 
-				stats = new Stats();
-				stats.domElement.style.position = 'absolute';
-				stats.domElement.style.top = '100px';
-				stats.domElement.style.zIndex = 100;
-				container.appendChild( stats.domElement );
+		stats = new Stats();
+		stats.domElement.style.position = 'absolute';
+		stats.domElement.style.top = '100px';
+		stats.domElement.style.zIndex = 100;
+		container.appendChild( stats.domElement );
 
-				renderer.domElement.addEventListener( 'mousemove', onMouseMove );
-				
-				/*CONTROLS*/
-				
-				//renderer.domElement is important for dat.gui!
-				controls = new THREE.TrackballControls( camera, renderer.domElement );
-				
-				
-				/*GLOBALS*/
-				//Merged mesh group
-				var mergedGeo	= new THREE.Geometry();
-				//var radius = 1;
-				//var geom = new THREE.SphereGeometry( radius,16, 16 );
-				
-				//GUI 
+		renderer.domElement.addEventListener( 'mousemove', onMouseMove );
+		
+		/*CONTROLS*/
+		
+		//renderer.domElement is important for dat.gui!
+		controls = new THREE.TrackballControls( camera, renderer.domElement );
+		
+		
+		/*GLOBALS*/
+		//Merged mesh group
+		var mergedGeo	= new THREE.Geometry();
+		
+		//GUI 
 
 	var parameters = function() {
 		//this.message = 'dat.gui';
@@ -221,6 +222,8 @@
 		this.targetY = 0;
 		this.targetZ = 0;
 		this.floorVisible = false;
+		this.Ellipsoids = true;
+		this.Particles = false;
 		this.Colormap = 'Default';
 	};
 	window.onload = function() {
@@ -261,9 +264,27 @@
 		
 		gui.add( params, 'floorVisible' ).onChange( togglePlane );
 		
+		gui.add( params, 'Ellipsoids').onChange( toggleEllipsoids );
+		gui.add( params, 'Particles').onChange( toggleParticles );
+		
+		
 		gui.add( params, 'Colormap', [ 'Default', 'NonAbs', 'Composition','Determinant', 'FA', 'LPS', 'Experimental'] ).onChange( function (value){
 			colorMapping = value;
 		});
+		
+		
+		
+		function toggleEllipsoids() {
+			if (params.Ellispsoid != drawEllipsoids){
+					drawEllipsoids = params.Ellispsoid;
+			}
+		}
+		
+		function toggleParticles() {
+			if (params.Particles != drawParticles){
+					drawParticles = params.Particles;
+			}
+		}
 		
 		
 		function togglePlane() {
@@ -292,31 +313,31 @@
 			requestAnimationFrame(update);
 			if (params.cameraX != camera.position.x){
 				params.cameraX = camera.position.x;
-				gui.__controllers[0].updateDisplay();
+				camFolder.__controllers[0].updateDisplay();
 			}
 			if (params.cameraY != camera.position.y){
 				params.cameraY = camera.position.y;
-				gui.__controllers[1].updateDisplay();
+				camFolder.__controllers[1].updateDisplay();
 			}
 			if (params.cameraZ != camera.position.z){
 				params.cameraZ = camera.position.z;
-				gui.__controllers[2].updateDisplay();
+				camFolder.__controllers[2].updateDisplay();
 			}
 			if (params.targetX != controls.target.x){
 				params.targetX = controls.target.x;
-				gui.__controllers[3].updateDisplay();
+				camFolder.__controllers[3].updateDisplay();
 			}
 			if (params.targetY != controls.target.y){
 				params.targetY = controls.target.y;
-				gui.__controllers[4].updateDisplay();
+				camFolder.__controllers[4].updateDisplay();
 			}
 			if (params.targetZ != controls.target.z){
 				params.targetZ = controls.target.z;
-				gui.__controllers[5].updateDisplay();
+				camFolder.__controllers[5].updateDisplay();
 			}	
 			if (params.Colormap != colorMapping){
 				colorMapping = params.Colormap;
-				gui.__controllers[6].updateDisplay();
+				camFolder.__controllers[6].updateDisplay();
 			}			
 			// Iterate over all controllers
 			/*for (var i in gui.__controllers) {
@@ -330,278 +351,388 @@
 		};/***** END OF GUI****/		
 				
 
-			}
+	}
 			
-			function applyVertexColors( g, c ) {
+	function applyVertexColors( g, c ) {
 
-				g.faces.forEach( function( f ) {
-					var n = ( f instanceof THREE.Face3 ) ? 3 : 4;
-					for( var j = 0; j < n; j ++ ) {
-						f.vertexColors[ j ] = c;
-					}
-				} );
-
+		g.faces.forEach( function( f ) {
+			var n = ( f instanceof THREE.Face3 ) ? 3 : 4;
+			for( var j = 0; j < n; j ++ ) {
+				f.vertexColors[ j ] = c;
 			}
-			
-			function getMaxDet(lines, nMatrices){
-				document.getElementById("generationMsg").innerHTML	= "Processing...";
-				var det = [];
-				for ( var i = 4; i < nMatrices; i=i+5 ) {
-					temp2= lines[i].split(',');
-					det = det.concat( (parseFloat(temp2[0])*parseFloat(temp2[1])*parseFloat(temp2[2]))*1000);
-				}
-				var max_of_array = Math.max.apply(Math, det);
-				var min_of_array = Math.min.apply(Math, det);				
-				
-				return max_of_array;
-			}
-			
-			
-			/*function getMaxTr(lines, nMatrices){
-				var tr = [];
-				//tr[1] = 1;
-				for ( var i = 4; i < nMatrices; i=i+5 ) {
-					temp2= lines[i].split(',');
-					tr = tr.concat( (parseFloat(temp2[0])+parseFloat(temp2[1])+parseFloat(temp2[2]))*1000);
-				}
-				var max_of_array = Math.max.apply(Math, tr);
-				var min_of_array = Math.min.apply(Math, tr);				
-				
-				return max_of_array;
-			}*/
-			
-			
-			
-			function drawBrain(lines, nMatrices, generated, maxDet){
-				var position = new THREE.Vector3();
-				radius = 1;
-				var rotation = new THREE.Vector3();
-				var geom = new THREE.SphereGeometry( radius,8, 4 );
-				var ellipsoid = new THREE.Mesh( geom );
-				
-				var color = new THREE.Color( 0xff0000 );
-				var scale = new THREE.Vector3();
-				
-				document.getElementById("generationMsg").innerHTML	= (nMatrices-generated)+ " voxels to generate";
-				
-				//defaultMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff, shading: THREE.FlatShading, vertexColors: THREE.VertexColors	} );
-				defaultMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff, vertexColors: THREE.VertexColors	} );
-				//defaultMaterial = new THREE.MeshNormalMaterial({ } );
+		} );
 
-				
-				
-				padding = 15; //15
-				first = generated*5;
-				for ( var i = first; i < (first+5000) && nMatrices >  generated; i++, generated++ ) {	
-					/*	SETTING POSITION	*/
-					/*
-						TODO: centrare in modo automatico, -64,-64,-24 è specifico per un dataset,
-						cambiare a seconda del caso.
-					*/
-					temp2= lines[i].split(',');
-					position.x = (parseFloat(temp2[0])-64);
-					position.y = (parseFloat(temp2[1])-64);
-					position.z = (parseFloat(temp2[2])-24);
-				
-					position.multiplyScalar(radius);
-					position.multiplyScalar(padding);
-					
-					/* Parsing Eigenvectors Matrix (rotation) */
-					temp2= lines[++i].split(',');
-					xx = parseFloat(temp2[0]);
-					xy = parseFloat(temp2[1]);
-					xz = parseFloat(temp2[2]);
-					
-					temp2= lines[++i].split(',');
-					yx = parseFloat(temp2[0]);
-					yy = parseFloat(temp2[1]);
-					yz = parseFloat(temp2[2]);
-					
-					temp2= lines[++i].split(',');
-					zx = parseFloat(temp2[0]);
-					zy = parseFloat(temp2[1]);
-					zz = parseFloat(temp2[2]);
-					
-					mat = new Array(	xx, xy, xz, 0,
+	}
+	
+	function getMaxDet(lines, nMatrices){
+		document.getElementById("generationMsg").innerHTML	= "Processing...";
+		var det = [];
+		for ( var i = 4; i < nMatrices; i=i+5 ) {
+			temp2= lines[i].split(',');
+			det = det.concat( (parseFloat(temp2[0])*parseFloat(temp2[1])*parseFloat(temp2[2]))*1000);
+		}
+		var max_of_array = Math.max.apply(Math, det);
+		var min_of_array = Math.min.apply(Math, det);				
+		
+		return max_of_array;
+	}
+	
+	
+	/*function getMaxTr(lines, nMatrices){
+		var tr = [];
+		//tr[1] = 1;
+		for ( var i = 4; i < nMatrices; i=i+5 ) {
+			temp2= lines[i].split(',');
+			tr = tr.concat( (parseFloat(temp2[0])+parseFloat(temp2[1])+parseFloat(temp2[2]))*1000);
+		}
+		var max_of_array = Math.max.apply(Math, tr);
+		var min_of_array = Math.min.apply(Math, tr);				
+		
+		return max_of_array;
+	}*/
+	
+	function drawBrain(lines, nMatrices, generated, maxDet){
+		if (drawEllipsoids===true){
+			drawBrainEllipsoids(lines, nMatrices, generated, maxDet);
+		}
+		if (drawParticles===true){
+			drawBrainParticles(lines, nMatrices, generated);
+		}
+	}
+	
+	function getPosition(){
+	
+	}
+	
+	function drawBrainEllipsoids(lines, nMatrices, generated, maxDet){
+		var position = new THREE.Vector3();
+		radius = 1;
+		var rotation = new THREE.Vector3();
+		//var geom = new THREE.SphereGeometry( radius,8, 4 );
+		var ellipsoid = new THREE.Mesh( geom );
+		
+		var color = new THREE.Color( 0xff0000 );
+		var scale = new THREE.Vector3();
+		
+		document.getElementById("generationMsg").innerHTML	= (nMatrices-generated)+ " voxels to generate";
+		
+		//defaultMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff, shading: THREE.FlatShading, vertexColors: THREE.VertexColors	} );
+		defaultMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff, vertexColors: THREE.VertexColors	} );
+		//defaultMaterial = new THREE.MeshNormalMaterial({ } );
+
+		
+		
+		padding = 15; //15
+		first = generated*5;
+		for ( var i = first; i < (first+5000) && nMatrices >  generated; i++, generated++ ) {	
+			/*	SETTING POSITION	*/
+			/*
+				TODO: centrare in modo automatico, -64,-64,-24 è specifico per un dataset,
+				cambiare a seconda del caso.
+			*/
+			temp2= lines[i].split(',');
+			position.x = (parseFloat(temp2[0])-64);
+			position.y = (parseFloat(temp2[1])-64);
+			position.z = (parseFloat(temp2[2])-24);
+		
+			position.multiplyScalar(radius);
+			position.multiplyScalar(padding);
+			
+			/* Parsing Eigenvectors Matrix (rotation) */
+			temp2= lines[++i].split(',');
+			xx = parseFloat(temp2[0]);
+			xy = parseFloat(temp2[1]);
+			xz = parseFloat(temp2[2]);
+			
+			temp2= lines[++i].split(',');
+			yx = parseFloat(temp2[0]);
+			yy = parseFloat(temp2[1]);
+			yz = parseFloat(temp2[2]);
+			
+			temp2= lines[++i].split(',');
+			zx = parseFloat(temp2[0]);
+			zy = parseFloat(temp2[1]);
+			zz = parseFloat(temp2[2]);
+			
+			mat = new Array(	xx, xy, xz, 0,
+								yx,	yy,	yz,	0,
+								zx,	zy,	zz,	0,
+								0,	0,	0,	1 );
+			rotM = new THREE.Matrix4(	xx, xy, xz, 0,
 										yx,	yy,	yz,	0,
 										zx,	zy,	zz,	0,
 										0,	0,	0,	1 );
-					rotM = new THREE.Matrix4(	xx, xy, xz, 0,
-												yx,	yy,	yz,	0,
-												zx,	zy,	zz,	0,
-												0,	0,	0,	1 );
-					/* It seems that Matrix4 are trully memorized as						
-						(xx, yx, zx, 0,
-						xy, yy, zy, 0,
-						xz, yz, zz, 0,
-						 0,  0,  0, 1)
-					*/
-					
-					temp2= lines[++i].split(',');
-					scale.x = parseFloat(temp2[0])*10 + 1;
-					scale.y = parseFloat(temp2[1])*10 + 1;
-					scale.z = parseFloat(temp2[2])*10 + 1;
-					
-					L = [ scale.x, scale.y, scale.z];
+			/* It seems that Matrix4 are trully memorized as						
+				(xx, yx, zx, 0,
+				xy, yy, zy, 0,
+				xz, yz, zz, 0,
+				 0,  0,  0, 1)
+			*/
+			
+			temp2= lines[++i].split(',');
+			scale.x = parseFloat(temp2[0])*10 + 1;
+			scale.y = parseFloat(temp2[1])*10 + 1;
+			scale.z = parseFloat(temp2[2])*10 + 1;
+			
+			L = [ scale.x, scale.y, scale.z];
 
-				switch(colorMapping){
-					
-					case 'Default':
-						//FRACTIONAL ANISOTROPY + DIRECTIONAL color mapping
-						l = scale;
-						ll = (l.x+l.y+l.z)/3;
-						fa = Math.sqrt(3*(Math.pow((l.x-ll),2)+Math.pow((l.y-ll),2)+Math.pow((l.z-ll),2)));
-						fa = fa/(Math.sqrt(2*(Math.pow(l.x,2)+Math.pow(l.y,2)+Math.pow(l.z,2))));
-						r = fa * Math.abs(mat[0]) + (0.8-fa); //hack
-						g = fa * Math.abs(mat[4]) + (0.8-fa); //hack
-						b = fa * Math.abs(mat[8]) + (0.8-fa); //hack
-						break;
-					case 'Composition':
-						e1 = new THREE.Vector3( xx, yx, zx);
-						e2 = new THREE.Vector3( xy, yy, zy);
-						e3 = new THREE.Vector3( xz, yz, zz);
-						e1.multiplyScalar(scale.x);
-						e2.multiplyScalar(scale.y);
-						e3.multiplyScalar(scale.z);
-						v = new THREE.Vector3();
-						v.addVectors(e1, e2);
-						v.addVectors(v, e3);
-						//norma = Math.sqrt(Math.pow(v.x,2)+Math.pow(v.y,2)+Math.pow(v.z,2));
-						v.normalize();
-						
-						//FRACTIONAL ANISOTROPY color mapping
-						l = scale;
-						ll = (l.x+l.y+l.z)/3;
-						fa = Math.sqrt(3*(Math.pow((L[0]-ll),2)+Math.pow((L[1]-ll),2)+Math.pow((L[2]-ll),2)));
-						fa = fa/Math.sqrt(2*(Math.pow(L[0],2)+Math.pow(L[1],2)+Math.pow(L[2],2)));
-						r = fa * Math.abs(v.x) + (1-fa);
-						g = fa * Math.abs(v.y) + (1-fa);
-						b = fa * Math.abs(v.z) + (1-fa);
-						break;
-					case 'NonAbs':
-						l = scale;
-						ll = (l.x+l.y+l.z)/3;
-						fa = Math.sqrt(3*(Math.pow((l.x-ll),2)+Math.pow((l.y-ll),2)+Math.pow((l.z-ll),2)));
-						fa = fa/(Math.sqrt(2*(Math.pow(l.x,2)+Math.pow(l.y,2)+Math.pow(l.z,2))));
-						r = fa * mat[0] + (1-fa); //hack
-						g = fa * mat[4] + (1-fa); //hack
-						b = fa * mat[8] + (1-fa); //hack				
-						break;
-					case 'Determinant':
-						//Determinant mapping - Cyan/Grey scale
-						l = scale;
-						det = l.x*l.y*l.z;											
-						r = 1 - Math.log(0.5+(det/maxDet));
-						g = 1 - Math.log(0.2+(det/maxDet));
-						b = 1 - Math.log(0.2+(det/maxDet));
-						break;
-					case 'FA':
-						//Fractional Anisotropy mapping - red/grey scale
-						l = scale;
-						ll = (l.x+l.y+l.z)/3;
-						fa = Math.sqrt(3*(Math.pow((l.x-ll),2)+Math.pow((l.y-ll),2)+Math.pow((l.z-ll),2)));
-						fa = fa/(Math.sqrt(2*(Math.pow(l.x,2)+Math.pow(l.y,2)+Math.pow(l.z,2))));
-						r = Math.sqrt(fa);
-						g = fa;
-						b = fa;
-						break;					
-					case 'LPS':
-						// Linear, planar, spherical mapping - bluish
-						l = scale;
-						cl = (l.x - l.y)/(l.x + l.y + l.z);
-						cp = (2*(l.y-l.z))/(l.x+l.y+l.z);
-						cs = (3*l.z)/(l.x+l.y+l.z);					
-						r = Math.sqrt(cl);
-						g = Math.sqrt(cp);
-						b = cs;
-						break;
-					case 'Experimental':
-						// A composition of other color mappings
-						l = scale;
-						det = l.x*l.y*l.z;
-						
-						ll = (l.x+l.y+l.z)/3;
-						fa = Math.sqrt(3*(Math.pow((l.x-ll),2)+Math.pow((l.y-ll),2)+Math.pow((l.z-ll),2)));
-						fa = fa/(Math.sqrt(2*(Math.pow(l.x,2)+Math.pow(l.y,2)+Math.pow(l.z,2))));
-						
-						cl = (l.x - l.y)/(l.x + l.y + l.z);
-						cp = (2*(l.y-l.z))/(l.x+l.y+l.z);
-						cs = (3*l.z)/(l.x+l.y+l.z);
-						
-						r = ((fa * Math.abs(mat[0]) + (0.75-fa)) + (1-Math.log(0.5+(det/maxDet))) + (Math.sqrt(cl)) + (Math.sqrt(fa)))/4;
-						g = ((fa * Math.abs(mat[4]) + (0.75-fa)) + (1-Math.log(0.2+(det/maxDet))) + (Math.sqrt(cp)) + (fa))/4;
-						b = ((fa * Math.abs(mat[8]) + (0.75-fa)) + (1-Math.log(0.2+(det/maxDet))) + (cs) + (fa))/4;
-						break;					
-					}
-
-					color.setRGB( r,g,b );
-					applyVertexColors( ellipsoid.geometry, color );
-					
-					ellipsoid.position.copy( position );
-					rotM.transpose(); // see comment under declaration of rotM.
-					rotation.setEulerFromRotationMatrix( rotM, 'ZYX' );
-					ellipsoid.rotation.copy(rotation);
-					
-					//make all spheres
-					/*scale.x = 10;
-					scale.y = 10;
-					scale.z = 10;*/
-					
-					ellipsoid.scale.copy( scale );
-					
-					/*scale2 = scale;
-					scale2.x = Math.sqrt(1/scale2.x)*10;
-					scale2.y = Math.sqrt(1/scale2.y)*10;
-					scale2.z = Math.sqrt(1/scale2.z)*10;
-					
-					ellipsoid.scale.copy( scale2 );*/
-					
-					//if(((L[0]*L[1]*L[2]) > 1) && (cl > 0.4) ){
-					//if(((L[0]*L[1]*L[2]) > 1) && (fa > 0.5) ){
-					//if(((L[0]*L[1]*L[2]) > 1) && (fa > 0.35) ){
-					//if(((L[0]*L[1]*L[2]) > 1) && (fa > 0.35) ){
-						THREE.GeometryUtils.merge(  mergedGeo, ellipsoid );
-					//}
-				}
-				if( nMatrices !== generated){
-					setTimeout(function(){	drawBrain(lines, nMatrices, generated, maxDet);	}, 0);
-					
-				}				
-				if( nMatrices === generated ){
-					document.getElementById("generationMsg").innerHTML	= generated+ " voxels analysed";	
-					var drawnObject = new THREE.Mesh( mergedGeo, defaultMaterial );
-					scene.add( drawnObject );					
-				}
+		switch(colorMapping){
+			
+			case 'Default':
+				//FRACTIONAL ANISOTROPY + DIRECTIONAL color mapping
+				l = scale;
+				ll = (l.x+l.y+l.z)/3;
+				fa = Math.sqrt(3*(Math.pow((l.x-ll),2)+Math.pow((l.y-ll),2)+Math.pow((l.z-ll),2)));
+				fa = fa/(Math.sqrt(2*(Math.pow(l.x,2)+Math.pow(l.y,2)+Math.pow(l.z,2))));
+				r = fa * Math.abs(mat[0]) + (0.8-fa); //hack
+				g = fa * Math.abs(mat[4]) + (0.8-fa); //hack
+				b = fa * Math.abs(mat[8]) + (0.8-fa); //hack
+				break;
+			case 'Composition':
+				e1 = new THREE.Vector3( xx, yx, zx);
+				e2 = new THREE.Vector3( xy, yy, zy);
+				e3 = new THREE.Vector3( xz, yz, zz);
+				e1.multiplyScalar(scale.x);
+				e2.multiplyScalar(scale.y);
+				e3.multiplyScalar(scale.z);
+				v = new THREE.Vector3();
+				v.addVectors(e1, e2);
+				v.addVectors(v, e3);
+				//norma = Math.sqrt(Math.pow(v.x,2)+Math.pow(v.y,2)+Math.pow(v.z,2));
+				v.normalize();
+				
+				//FRACTIONAL ANISOTROPY color mapping
+				l = scale;
+				ll = (l.x+l.y+l.z)/3;
+				fa = Math.sqrt(3*(Math.pow((L[0]-ll),2)+Math.pow((L[1]-ll),2)+Math.pow((L[2]-ll),2)));
+				fa = fa/Math.sqrt(2*(Math.pow(L[0],2)+Math.pow(L[1],2)+Math.pow(L[2],2)));
+				r = fa * Math.abs(v.x) + (1-fa);
+				g = fa * Math.abs(v.y) + (1-fa);
+				b = fa * Math.abs(v.z) + (1-fa);
+				break;
+			case 'NonAbs':
+				l = scale;
+				ll = (l.x+l.y+l.z)/3;
+				fa = Math.sqrt(3*(Math.pow((l.x-ll),2)+Math.pow((l.y-ll),2)+Math.pow((l.z-ll),2)));
+				fa = fa/(Math.sqrt(2*(Math.pow(l.x,2)+Math.pow(l.y,2)+Math.pow(l.z,2))));
+				r = fa * mat[0] + (1-fa); //hack
+				g = fa * mat[4] + (1-fa); //hack
+				b = fa * mat[8] + (1-fa); //hack				
+				break;
+			case 'Determinant':
+				//Determinant mapping - Cyan/Grey scale
+				l = scale;
+				det = l.x*l.y*l.z;											
+				r = 1 - Math.log(0.5+(det/maxDet));
+				g = 1 - Math.log(0.2+(det/maxDet));
+				b = 1 - Math.log(0.2+(det/maxDet));
+				break;
+			case 'FA':
+				//Fractional Anisotropy mapping - red/grey scale
+				l = scale;
+				ll = (l.x+l.y+l.z)/3;
+				fa = Math.sqrt(3*(Math.pow((l.x-ll),2)+Math.pow((l.y-ll),2)+Math.pow((l.z-ll),2)));
+				fa = fa/(Math.sqrt(2*(Math.pow(l.x,2)+Math.pow(l.y,2)+Math.pow(l.z,2))));
+				r = Math.sqrt(fa);
+				g = fa;
+				b = fa;
+				break;					
+			case 'LPS':
+				// Linear, planar, spherical mapping - bluish
+				l = scale;
+				cl = (l.x - l.y)/(l.x + l.y + l.z);
+				cp = (2*(l.y-l.z))/(l.x+l.y+l.z);
+				cs = (3*l.z)/(l.x+l.y+l.z);					
+				r = Math.sqrt(cl);
+				g = Math.sqrt(cp);
+				b = cs;
+				break;
+			case 'Experimental':
+				// A composition of other color mappings
+				l = scale;
+				det = l.x*l.y*l.z;
+				
+				ll = (l.x+l.y+l.z)/3;
+				fa = Math.sqrt(3*(Math.pow((l.x-ll),2)+Math.pow((l.y-ll),2)+Math.pow((l.z-ll),2)));
+				fa = fa/(Math.sqrt(2*(Math.pow(l.x,2)+Math.pow(l.y,2)+Math.pow(l.z,2))));
+				
+				cl = (l.x - l.y)/(l.x + l.y + l.z);
+				cp = (2*(l.y-l.z))/(l.x+l.y+l.z);
+				cs = (3*l.z)/(l.x+l.y+l.z);
+				
+				r = ((fa * Math.abs(mat[0]) + (0.75-fa)) + (1-Math.log(0.5+(det/maxDet))) + (Math.sqrt(cl)) + (Math.sqrt(fa)))/4;
+				g = ((fa * Math.abs(mat[4]) + (0.75-fa)) + (1-Math.log(0.2+(det/maxDet))) + (Math.sqrt(cp)) + (fa))/4;
+				b = ((fa * Math.abs(mat[8]) + (0.75-fa)) + (1-Math.log(0.2+(det/maxDet))) + (cs) + (fa))/4;
+				break;					
 			}
+
+			color.setRGB( r,g,b );
+			applyVertexColors( ellipsoid.geometry, color );
+			
+			ellipsoid.position.copy( position );
+			rotM.transpose(); // see comment under declaration of rotM.
+			rotation.setEulerFromRotationMatrix( rotM, 'ZYX' );
+			ellipsoid.rotation.copy(rotation);
+			
+			//make all spheres
+			/*scale.x = 10;
+			scale.y = 10;
+			scale.z = 10;*/
+			
+			ellipsoid.scale.copy( scale );
+			
+			/*scale2 = scale;
+			scale2.x = Math.sqrt(1/scale2.x)*10;
+			scale2.y = Math.sqrt(1/scale2.y)*10;
+			scale2.z = Math.sqrt(1/scale2.z)*10;
+			
+			ellipsoid.scale.copy( scale2 );*/
+			
+			//if(((L[0]*L[1]*L[2]) > 1) && (cl > 0.4) ){
+			//if(((L[0]*L[1]*L[2]) > 1) && (fa > 0.5) ){
+			//if(((L[0]*L[1]*L[2]) > 1) && (fa > 0.35) ){
+			//if(((L[0]*L[1]*L[2]) > 1) && (fa > 0.35) ){
+				THREE.GeometryUtils.merge(  mergedGeo, ellipsoid );
+			//}
+		}
+		if( nMatrices !== generated){
+			setTimeout(function(){	drawBrainEllipsoids(lines, nMatrices, generated, maxDet);	}, 0);
+			
+		}				
+		if( nMatrices === generated ){
+			document.getElementById("generationMsg").innerHTML	= generated+ " voxels analysed";	
+			var drawnObject = new THREE.Mesh( mergedGeo, defaultMaterial );
+			scene.add( drawnObject );					
+		}
+	}
+	
+	function drawBrainParticles(lines, nMatrices, generated){
+		var geometry = new THREE.Geometry();
+		var position = new THREE.Vector4();
+		var scale = new THREE.Vector3();
+		var rotation = new THREE.Vector3();
+		//var color = new THREE.Color( 0xff0000 );
+		
+		radius = 1;
+		padding = 15;
+		
+		for ( var i = 0; i < nMatrices*5; i++, generated++ ) {
+			temp2= lines[i].split(',');
+			x = (parseFloat(temp2[0])-64)*radius*padding;
+			y = (parseFloat(temp2[1])-64)*radius*padding;
+			z = (parseFloat(temp2[2])-24)*radius*padding;
 			
 			
+			//	Parsing Eigenvectors Matrix (rotation)
+			temp2= lines[++i].split(',');
+			xx = parseFloat(temp2[0]);
+			xy = parseFloat(temp2[1]);
+			xz = parseFloat(temp2[2]);
+			
+			temp2= lines[++i].split(',');
+			yx = parseFloat(temp2[0]);
+			yy = parseFloat(temp2[1]);
+			yz = parseFloat(temp2[2]);
+			
+			temp2= lines[++i].split(',');
+			zx = parseFloat(temp2[0]);
+			zy = parseFloat(temp2[1]);
+			zz = parseFloat(temp2[2]);
+			
+			mat = new THREE.Matrix4(	xx, xy, xz, 0,
+								yx,	yy,	yz,	0,
+								zx,	zy,	zz,	0,
+								0,	0,	0,	1 )
+			
+			//scaling
+			temp2= lines[++i].split(',');
+			scale.x = parseFloat(temp2[0]) * 10 + 1;
+			scale.y = parseFloat(temp2[1]) * 10 + 1;
+			scale.z = parseFloat(temp2[2]) * 10 + 1;
+			
+			L = [ scale.x, scale.y, scale.z];
+			
+			
+			//FRACTIONAL ANISOTROPY
+			ll = (L[0]+L[1]+L[2])/3;
+			fa = Math.sqrt(3*(Math.pow((L[0]-ll),2)+Math.pow((L[1]-ll),2)+Math.pow((L[2]-ll),2)));
+			fa = fa/Math.sqrt(2*(Math.pow(L[0],2)+Math.pow(L[1],2)+Math.pow(L[2],2)));
+			r = fa * xx + (1-fa);
+			g = fa * yx + (1-fa);
+			b = fa * zx + (1-fa);
+			
+			color = 0xbb0000;
+				for ( var j = 0; j < Math.floor( (fa) * 100); j ++ ) {
+					var vertex = new THREE.Vector3();
+					//draw random points inside an ellipsoid with Ri(l1,l2,l3);
+					u = Math.random()*2*Math.PI;
+					v = Math.random()*Math.PI;
+					w = Math.random()*2*Math.PI;
+					radius = 1;
+					position.x = 0 + (scale.x*Math.cos(u)*Math.sin(v)*radius) ;
+					position.y = 0 + (scale.y*Math.sin(v)*Math.sin(u)*radius);
+					position.z = 0 + (scale.z*Math.cos(v)*radius);
+					position.w = 1;
+						
+					position.applyMatrix4(mat);
+					
+					box = 1;
+					
+					vertex.x = x+position.x*box;
+					vertex.y = y+position.y*box;
+					vertex.z = z+position.z*box;
+					vertex.w = 1;
+								
+					geometry.vertices.push( vertex );
+					
+					geometry.colors.push(  new THREE.Color().setRGB(r,g,b)  );
+				}
+			//geometry.rotation.copy( rotation );
 
-			function onMouseMove( e ) {
+		}
 
-				mouse.x = e.clientX;
-				mouse.y = e.clientY;
+	var material = new THREE.ParticleBasicMaterial( { 	size: 1,
+														vertexColors: THREE.VertexColors,
+														depthTest: false,
+														opacity: 0.3,
+														sizeAttenuation: false,
+														transparent: true
+													} );
 
-			}
+	var mesh = new THREE.ParticleSystem( geometry, material );
 
-			function animate() {
+	scene.add( mesh );
+	}
+	
+	
+	
 
-				requestAnimationFrame( animate );
+	function onMouseMove( e ) {
 
-				render();
-				stats.update();
+		mouse.x = e.clientX;
+		mouse.y = e.clientY;
 
-			}
+	}
+
+	function animate() {
+
+		requestAnimationFrame( animate );
+
+		render();
+		stats.update();
+
+	}
 
 
-			function render() {
+	function render() {
 
-				controls.update();
+		controls.update();
 
-				renderer.render( scene, camera );
+		renderer.render( scene, camera );
 
-			}
+	}
 
-		</script>
+</script>
 
 	</body>
 </html>
