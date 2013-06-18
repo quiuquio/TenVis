@@ -387,8 +387,7 @@
 	function getMaxDet(lines, nMatrices){
 		document.getElementById("generationMsg").innerHTML	= "Processing...";
 		var det = [];
-		for ( var i = 4; i < nMatrices; i=i+5 ) {
-		// B: apparently there is a bug over here
+		for ( var i = 4; i < nMatrices*5; i=i+5 ) {
 			temp2= lines[i].split(',');
 			det = det.concat( (parseFloat(temp2[0])*parseFloat(temp2[1])*parseFloat(temp2[2]))*1000);
 		}
@@ -430,17 +429,17 @@
 	
 	function drawBrain(lines, nMatrices, generated, maxDet,center){
 		if (drawEllipsoids===true){
-			drawBrainEllipsoids(lines, nMatrices, generated, maxDet,center);
+			drawBrainEllipsoids(lines, nMatrices, generated, maxDet, center);
 		}
 		if (drawParticles===true){
-			drawBrainParticles(lines, nMatrices, generated);
+			drawBrainParticles(lines, nMatrices, generated, maxDet, center);
 		}
 
 	}	
 	
 
 	
-	function drawBrainEllipsoids(lines, nMatrices, generated, maxDet,center){
+	function drawBrainEllipsoids(lines, nMatrices, generated, maxDet, center){
 		var position = new THREE.Vector3();
 		radius = 1;
 		var rotation = new THREE.Vector3();
@@ -464,13 +463,11 @@
 		padding = 15; //15
 		first = generated*5;
 		for ( var i = first; i < (first+5000) && nMatrices >  generated; i++, generated++ ) {	
-			/*	SETTING POSITION	*/
+			/*	SETTING POSITION	*/ 
 			/*
-				TODO: centrare in modo automatico, -64,-64,-24 è specifico per un dataset,
-				cambiare a seconda del caso.
+				This is usefull with DTI data. For plotting functions, it should be necessary to force center to (0,0,0)
 			*/
 			temp2= lines[i].split(',');
-			document.getElementById("debugBruno").innerHTML	= "dovrebbe essere "+center.x;
 			position.x = parseFloat(temp2[0])-center.x;
 			position.y = parseFloat(temp2[1])-center.y;
 			position.z = parseFloat(temp2[2])-center.z;
@@ -636,7 +633,7 @@
 			//}
 		}
 		if( nMatrices !== generated){
-			setTimeout(function(){	drawBrainEllipsoids(lines, nMatrices, generated, maxDet,center);	}, 0);
+			setTimeout(function(){	drawBrainEllipsoids(lines, nMatrices, generated, maxDet, center);	}, 0);
 			
 		}				
 		if( nMatrices === generated ){
@@ -646,7 +643,7 @@
 		}
 	}
 	
-	function drawBrainParticles(lines, nMatrices, generated){
+	function drawBrainParticles(lines, nMatrices, generated, maxDet, center){
 		var geometry = new THREE.Geometry();
 		var position = new THREE.Vector4();
 		var scale = new THREE.Vector3();
@@ -658,9 +655,9 @@
 		
 		for ( var i = 0; i < nMatrices*5; i++, generated++ ) {
 			temp2= lines[i].split(',');
-			x = (parseFloat(temp2[0])-64)*radius*padding;
-			y = (parseFloat(temp2[1])-64)*radius*padding;
-			z = (parseFloat(temp2[2])-24)*radius*padding;
+			x = (parseFloat(temp2[0])-center.x)*radius*padding;
+			y = (parseFloat(temp2[1])-center.y)*radius*padding;
+			z = (parseFloat(temp2[2])-center.z)*radius*padding;
 			
 			
 			//	Parsing Eigenvectors Matrix (rotation)
@@ -704,44 +701,41 @@
 			color = 0xbb0000;
 				for ( var j = 0; j < Math.floor( (fa) * 100); j ++ ) {
 					var vertex = new THREE.Vector3();
-					//draw random points inside an ellipsoid with Ri(l1,l2,l3);
+					//draw fa*100 random points on the surface of an ellipsoid with Ri(l1,l2,l3);
 					u = Math.random()*2*Math.PI;
 					v = Math.random()*Math.PI;
 					w = Math.random()*2*Math.PI;
-					radius = 1;
-					position.x = 0 + (scale.x*Math.cos(u)*Math.sin(v)*radius) ;
-					position.y = 0 + (scale.y*Math.sin(v)*Math.sin(u)*radius);
-					position.z = 0 + (scale.z*Math.cos(v)*radius);
+					position.x = 0 + ( scale.x * Math.cos(u) * Math.sin(v) * radius );
+					position.y = 0 + ( scale.y * Math.sin(v) * Math.sin(u) * radius );
+					position.z = 0 + ( scale.z * Math.cos(v) * radius );
 					position.w = 1;
 						
 					position.applyMatrix4(mat);
 					
 					box = 1;
 					
-					vertex.x = x+position.x*box;
-					vertex.y = y+position.y*box;
-					vertex.z = z+position.z*box;
+					vertex.x = x + position.x * box;
+					vertex.y = y + position.y * box;
+					vertex.z = z + position.z * box;
 					vertex.w = 1;
 								
 					geometry.vertices.push( vertex );
 					
 					geometry.colors.push(  new THREE.Color().setRGB(r,g,b)  );
 				}
-			//geometry.rotation.copy( rotation );
-
 		}
 
-	var material = new THREE.ParticleBasicMaterial( { 	size: 1,
-														vertexColors: THREE.VertexColors,
-														depthTest: false,
-														opacity: 0.3,
-														sizeAttenuation: false,
-														transparent: true
-													} );
+		var material = new THREE.ParticleBasicMaterial( { 	size: 1,
+															vertexColors: THREE.VertexColors,
+															depthTest: false,
+															opacity: 0.3,
+															sizeAttenuation: false,
+															transparent: true
+														} );
 
-	var mesh = new THREE.ParticleSystem( geometry, material );
+		var mesh = new THREE.ParticleSystem( geometry, material );
 
-	scene.add( mesh );
+		scene.add( mesh );
 	}
 	
 	
