@@ -63,8 +63,10 @@
 			n = lines.length-1;
 			n = n/5;
 			maxDet = getMaxDet(lines, n);
-			//maxTrace = getMaxTr(lines, n);			
-			drawBrain(lines, n, 0, maxDet);
+			//maxTrace = getMaxTr(lines, n);
+			center = getCenter(lines, n);			
+			drawBrain(lines, n, 0, maxDet,center);
+			// maxDet and center could be computed into drawBrain 
 		  }
 		};
 		reader.readAsText(file);
@@ -103,6 +105,7 @@
   dropZone.addEventListener('drop', handleFileSelect, false);
 </script>
 <span id="generationMsg"></span>
+<br><span id="debugBruno"></span>
 
 <div id="container"></div>
 
@@ -385,6 +388,7 @@
 		document.getElementById("generationMsg").innerHTML	= "Processing...";
 		var det = [];
 		for ( var i = 4; i < nMatrices; i=i+5 ) {
+		// B: apparently there is a bug over here
 			temp2= lines[i].split(',');
 			det = det.concat( (parseFloat(temp2[0])*parseFloat(temp2[1])*parseFloat(temp2[2]))*1000);
 		}
@@ -395,6 +399,22 @@
 	}
 	
 	
+	function getCenter(lines, nMatrices){
+		var centerPosition = new THREE.Vector3();
+		for (var i = 0; i < nMatrices*5; i=i+5 ) {
+			currentCoordinates = lines[i].split(',');
+			centerPosition.x = centerPosition.x + parseInt(currentCoordinates[0])/nMatrices;
+			centerPosition.y = centerPosition.y + parseInt(currentCoordinates[1])/nMatrices;
+			centerPosition.z = centerPosition.z + parseInt(currentCoordinates[2])/nMatrices;
+		}
+				
+		centerPosition.x = Math.floor(centerPosition.x);
+		centerPosition.y = Math.floor(centerPosition.y);
+		centerPosition.z = Math.floor(centerPosition.z);
+		
+		return centerPosition;			
+	}
+
 	/*function getMaxTr(lines, nMatrices){
 		var tr = [];
 		//tr[1] = 1;
@@ -408,9 +428,9 @@
 		return max_of_array;
 	}*/
 	
-	function drawBrain(lines, nMatrices, generated, maxDet){
+	function drawBrain(lines, nMatrices, generated, maxDet,center){
 		if (drawEllipsoids===true){
-			drawBrainEllipsoids(lines, nMatrices, generated, maxDet);
+			drawBrainEllipsoids(lines, nMatrices, generated, maxDet,center);
 		}
 		if (drawParticles===true){
 			drawBrainParticles(lines, nMatrices, generated);
@@ -420,7 +440,7 @@
 	
 
 	
-	function drawBrainEllipsoids(lines, nMatrices, generated, maxDet){
+	function drawBrainEllipsoids(lines, nMatrices, generated, maxDet,center){
 		var position = new THREE.Vector3();
 		radius = 1;
 		var rotation = new THREE.Vector3();
@@ -450,9 +470,10 @@
 				cambiare a seconda del caso.
 			*/
 			temp2= lines[i].split(',');
-			position.x = (parseFloat(temp2[0])-64);
-			position.y = (parseFloat(temp2[1])-64);
-			position.z = (parseFloat(temp2[2])-24);
+			document.getElementById("debugBruno").innerHTML	= "dovrebbe essere "+center.x;
+			position.x = parseFloat(temp2[0])-center.x;
+			position.y = parseFloat(temp2[1])-center.y;
+			position.z = parseFloat(temp2[2])-center.z;
 		
 			position.multiplyScalar(radius);
 			position.multiplyScalar(padding);
@@ -615,7 +636,7 @@
 			//}
 		}
 		if( nMatrices !== generated){
-			setTimeout(function(){	drawBrainEllipsoids(lines, nMatrices, generated, maxDet);	}, 0);
+			setTimeout(function(){	drawBrainEllipsoids(lines, nMatrices, generated, maxDet,center);	}, 0);
 			
 		}				
 		if( nMatrices === generated ){
