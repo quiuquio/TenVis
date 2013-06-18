@@ -55,7 +55,6 @@
 	function readBlob2(file) {
 		var lines;
 		var reader = new FileReader();
-		console.log(reader);
 		//Se usiamo onloadend, dobbiamo controllare il readystate
 		reader.onloadend = function(evt) {
 		  if (evt.target.readyState == FileReader.DONE) { // DONE == 2
@@ -457,44 +456,77 @@
 		//defaultMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff, shading: THREE.FlatShading, vertexColors: THREE.VertexColors	} );
 		defaultMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff, vertexColors: THREE.VertexColors	} );
 		//defaultMaterial = new THREE.MeshNormalMaterial({ } );
-
+		
+		var parser = function(lines, i){
+			this.coord = new THREE.Vector3();
+			this.eigs = new THREE.Vector3();
+			/*
+				ELLIPSOIDS DEFAULT
+			*/			
+			//parse coordinates
+			temp2= lines[i].split(',');
+			this.coord.x = parseFloat(temp2[0]);
+			this.coord.y = parseFloat(temp2[1]);
+			this.coord.z = parseFloat(temp2[2]);
+			//parse eigenvectors matrix
+			temp2= lines[i+1].split(',');
+			this.xx = parseFloat(temp2[0]);
+			this.xy = parseFloat(temp2[1]);
+			this.xz = parseFloat(temp2[2]);
+			
+			temp2= lines[i+2].split(',');
+			this.yx = parseFloat(temp2[0]);
+			this.yy = parseFloat(temp2[1]);
+			this.yz = parseFloat(temp2[2]);
+			
+			temp2= lines[i+3].split(',');
+			this.zx = parseFloat(temp2[0]);
+			this.zy = parseFloat(temp2[1]);
+			this.zz = parseFloat(temp2[2]);
+			
+			//parse eigenvalues
+			temp2= lines[i+4].split(',');
+			this.eigs.x = parseFloat(temp2[0]);
+			this.eigs.y = parseFloat(temp2[1]);
+			this.eigs.z = parseFloat(temp2[2]);			
+		}
 		
 		
 		padding = 15; //15
 		first = generated*5;
-		for ( var i = first; i < (first+5000) && nMatrices >  generated; i++, generated++ ) {	
+		for ( var i = first; i < (first+5000) && nMatrices >  generated; i+=5, generated++ ) {	
+
+			var parsed = new parser(lines,i); // <- the magic happens here!
+			
 			/*	SETTING POSITION	*/ 
 			/*
-				This is usefull with DTI data. For plotting functions, it should be necessary to force center to (0,0,0)
-			*/
-			temp2= lines[i].split(',');
-			position.x = parseFloat(temp2[0])-center.x;
-			position.y = parseFloat(temp2[1])-center.y;
-			position.z = parseFloat(temp2[2])-center.z;
+				Automatic centering is usefull with DTI data.
+				For plotting functions, it should be necessary to force center to (0,0,0)
+			*/						
+			position.x = parsed.coord.x - center.x;
+			position.y = parsed.coord.y - center.y;
+			position.z = parsed.coord.z - center.z;
 		
 			position.multiplyScalar(radius);
-			position.multiplyScalar(padding);
+			position.multiplyScalar(padding);			
+
+			xx = parsed.xx;
+			xy = parsed.xy;
+			xz = parsed.xz;
 			
-			/* Parsing Eigenvectors Matrix (rotation) */
-			temp2= lines[++i].split(',');
-			xx = parseFloat(temp2[0]);
-			xy = parseFloat(temp2[1]);
-			xz = parseFloat(temp2[2]);
+			yx = parsed.yx;
+			yy = parsed.yy;
+			yz = parsed.yz;
 			
-			temp2= lines[++i].split(',');
-			yx = parseFloat(temp2[0]);
-			yy = parseFloat(temp2[1]);
-			yz = parseFloat(temp2[2]);
-			
-			temp2= lines[++i].split(',');
-			zx = parseFloat(temp2[0]);
-			zy = parseFloat(temp2[1]);
-			zz = parseFloat(temp2[2]);
+			zx = parsed.zx;
+			zy = parsed.zy;
+			zz = parsed.zz;
 			
 			mat = new Array(	xx, xy, xz, 0,
 								yx,	yy,	yz,	0,
 								zx,	zy,	zz,	0,
 								0,	0,	0,	1 );
+								
 			rotM = new THREE.Matrix4(	xx, xy, xz, 0,
 										yx,	yy,	yz,	0,
 										zx,	zy,	zz,	0,
@@ -506,10 +538,9 @@
 				 0,  0,  0, 1)
 			*/
 			
-			temp2= lines[++i].split(',');
-			scale.x = parseFloat(temp2[0])*10 + 1;
-			scale.y = parseFloat(temp2[1])*10 + 1;
-			scale.z = parseFloat(temp2[2])*10 + 1;
+			scale.x = parsed.eigs.x * 10 + 1;
+			scale.y = parsed.eigs.y * 10 + 1;
+			scale.z = parsed.eigs.z * 10 + 1;
 			
 			L = [ scale.x, scale.y, scale.z];
 
@@ -677,9 +708,9 @@
 			zz = parseFloat(temp2[2]);
 			
 			mat = new THREE.Matrix4(	xx, xy, xz, 0,
-								yx,	yy,	yz,	0,
-								zx,	zy,	zz,	0,
-								0,	0,	0,	1 )
+										yx,	yy,	yz,	0,
+										zx,	zy,	zz,	0,
+										0,	0,	0,	1 )
 			
 			//scaling
 			temp2= lines[++i].split(',');
