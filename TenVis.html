@@ -55,7 +55,7 @@
 	function readBlob2(file) {
 		var lines;
 		var reader = new FileReader();
-		
+		console.log(reader);
 		//Se usiamo onloadend, dobbiamo controllare il readystate
 		reader.onloadend = function(evt) {
 		  if (evt.target.readyState == FileReader.DONE) { // DONE == 2
@@ -66,7 +66,7 @@
 			//maxTrace = getMaxTr(lines, n);
 			center = getCenter(lines, n);			
 			drawBrain(lines, n, 0, maxDet,center);
-			// maxDet and center could be computed into drawBrain 
+			// TODO: maxDet and center could be computed into drawBrain 
 		  }
 		};
 		reader.readAsText(file);
@@ -105,7 +105,6 @@
   dropZone.addEventListener('drop', handleFileSelect, false);
 </script>
 <span id="generationMsg"></span>
-<br><span id="debugBruno"></span>
 
 <div id="container"></div>
 
@@ -133,7 +132,7 @@
 	animate();
 
 	function init() {
-
+		
 		container = document.getElementById( "container" );
 		
 		// CAMERA
@@ -144,6 +143,7 @@
 		camera.position.set(0, 0, 1500);									
 
 		scene = new THREE.Scene();
+		
 		
 		/*LIGHTS*/
 		scene.add( new THREE.AmbientLight( 0x222222 ) );
