@@ -65,7 +65,7 @@
 			//maxTrace = getMaxTr(lines, n);
 			center = getCenter(lines, n);			
 			drawBrain(lines, n, 0, maxDet,center);
-			// TODO: maxDet and center could be computed into drawBrain 
+			// TODO: maxDet and center could be computed into drawBrain or a dedicated analys function
 		  }
 		};
 		reader.readAsText(file);
@@ -383,13 +383,27 @@
 
 	}
 	
-	function getMaxDet(lines, nMatrices){
+	function getMaxDet(lines, nMatrices, lineRatio, protocol){
 		document.getElementById("generationMsg").innerHTML	= "Processing...";
 		var det = [];
 		//for ( var i = 4; i < nMatrices*5; i=i+5 ) {
-		for ( var i = 4; i < nMatrices; i=i+1 ) {
-			temp2= lines[i].split(',');
-			det = det.concat( (parseFloat(temp2[0])*parseFloat(temp2[1])*parseFloat(temp2[2]))*1000);
+		if(protocol == '#DEFAULT'){
+			for ( var i = 5; i < nMatrices*lineRatio; i=i+lineRatio ) {
+				temp2= lines[i].split(',');
+				det = det.concat( (parseFloat(temp2[0])*parseFloat(temp2[1])*parseFloat(temp2[2]))*1000);
+			}
+		}
+		else if(protocol == '#NOPROTOCOL'){
+			for ( var i = 4; i < nMatrices*lineRatio; i=i+lineRatio ) {
+				temp2= lines[i].split(',');
+				det = det.concat( (parseFloat(temp2[0])*parseFloat(temp2[1])*parseFloat(temp2[2]))*1000);
+			}
+		}
+		else if(protocol == '#ONELINEPERMATRIX'){
+			for ( var i = 1; i < nMatrices*lineRatio; i=i+lineRatio ) {
+				temp2= lines[i].split(',');
+				det = det.concat( (parseFloat(temp2[12])*parseFloat(temp2[13])*parseFloat(temp2[14]))*1000);
+			}
 		}
 		var max_of_array = Math.max.apply(Math, det);
 		var min_of_array = Math.min.apply(Math, det);				
@@ -398,10 +412,14 @@
 	}
 	
 	
-	function getCenter(lines, nMatrices){
+	function getCenter(lines, nMatrices, lineRatio, protocol){
 		var centerPosition = new THREE.Vector3();
 		//for (var i = 0; i < nMatrices*5; i=i+5 ) {
-		for (var i = 0; i < nMatrices; i=i+1 ) {
+		if(protocol == '#NOPROTOCOL')
+			var start = 0;
+		else
+			var start = 1;
+		for (var i = start; i < nMatrices*lineRatio; i=i+lineRatio ) {
 			currentCoordinates = lines[i].split(',');
 			centerPosition.x = centerPosition.x + parseInt(currentCoordinates[0])/nMatrices;
 			centerPosition.y = centerPosition.y + parseInt(currentCoordinates[1])/nMatrices;
@@ -428,7 +446,33 @@
 		return max_of_array;
 	}*/
 	
+	var fileInfo = function(lines){
+		this.protocol = lines[0];
+		if (this.protocol == '#DEFAULT'){ // five lines per matrix: 1: cord; 2,3,4: matrix; 5: eigenvalues; 
+			this.lineRatio = 5;
+			this.nMatrices = (lines.length-2)/this.lineRatio;
+		}
+		else if(this.protocol == '#ONELINEPERMATRIX'){
+			this.lineRatio = 1;
+			this.nMatrices = lines.length-2;
+		}
+		else{ // no protocol specified. DEFAULT behaviour
+			this.protocol = '#NOPROTOCOL';
+			this.lineRatio = 5;
+			this.nMatrices = lines.length-1;
+		}
+		console.log(this.protocol);
+		console.log(this.lineRatio);
+		console.log(this.nMatrices);
+		this.center = THREE.Vector3;
+		this.center = getCenter(lines, this.nMatrices, this.lineRatio);
+		this.maxDet = getMaxDet(lines, this.nMatrices, this.lineRatio, this.protocol);
+	}
+	
+	
 	function drawBrain(lines, nMatrices, generated, maxDet,center){
+		var info = new fileInfo(lines);
+		console.log(info);
 		if (drawEllipsoids===true){
 			drawBrainEllipsoids(lines, nMatrices, generated, maxDet, center);
 		}
