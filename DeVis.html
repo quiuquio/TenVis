@@ -425,7 +425,6 @@
 		}
 		for (var i = start; i+stop < (nMatrices*lineRatio); i=i+lineRatio ) {
 			currentCoordinates = lines[i].split(',');
-			//console.log(currentCoordinates);
 			centerPosition.x = centerPosition.x + parseInt(currentCoordinates[0])/nMatrices;
 			centerPosition.y = centerPosition.y + parseInt(currentCoordinates[1])/nMatrices;
 			centerPosition.z = centerPosition.z + parseInt(currentCoordinates[2])/nMatrices;
@@ -466,9 +465,6 @@
 			this.lineRatio = 5;
 			this.nMatrices = (lines.length-1)/this.lineRatio;
 		}
-		console.log(this.protocol);
-		console.log(this.lineRatio);
-		console.log(this.nMatrices);
 		this.center = THREE.Vector3;
 		this.center = getCenter(lines, this.nMatrices, this.lineRatio, this.protocol);
 		this.maxDet = getMaxDet(lines, this.nMatrices, this.lineRatio, this.protocol);
@@ -477,9 +473,8 @@
 	
 	function drawBrain(lines){
 		var info = new fileInfo(lines);
-		console.log(info);
 		if (drawEllipsoids===true){
-			drawBrainEllipsoids(lines, info.nMatrices, 0, info.maxDet, info.center, info.protocol, info.lineRatio);
+			drawBrainEllipsoids(lines, 0, info);
 		}
 		if (drawParticles===true){
 			drawBrainParticles(lines, info.nMatrices, 0, info.maxDet, info.center, info.protocol, info.lineRatio);
@@ -489,11 +484,14 @@
 	
 
 	
-	function drawBrainEllipsoids(lines, nMatrices, generated, maxDet, center, protocol, lineRatio){
+	function drawBrainEllipsoids(lines, generated, info){
 		var position = new THREE.Vector3();
 		radius = 1;
 		var rotation = new THREE.Vector3();
-
+		
+		console.log(generated);
+		console.log(info);
+		
 		var geom = new THREE.SphereGeometry( radius, RESP, REST ); 
 
 		//var geom = new THREE.SphereGeometry( radius,8, 4 );
@@ -502,13 +500,13 @@
 		var color = new THREE.Color( 0xff0000 );
 		var scale = new THREE.Vector3();
 		
-		document.getElementById("generationMsg").innerHTML	= (nMatrices-generated)+ " voxels to generate";
+		document.getElementById("generationMsg").innerHTML	= (info.nMatrices-generated)+ " voxels to generate";
 		
 		//defaultMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff, shading: THREE.FlatShading, vertexColors: THREE.VertexColors	} );
 		defaultMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff, vertexColors: THREE.VertexColors	} );
 		//defaultMaterial = new THREE.MeshNormalMaterial({ } );
 		
-		var parser = function(lines, i){
+		var parser = function(lines, i, protocol){
 			this.coord = new THREE.Vector3();
 			this.eigs = new THREE.Vector3();
 			/*
@@ -516,7 +514,7 @@
 			*/			
 			if(protocol == '#NOPROTOCOL'){
 			//parse coordinates
-			console.log(i);
+
 			temp2= lines[i].split(',');
 			this.coord.x = parseFloat(temp2[0]);
 			this.coord.y = parseFloat(temp2[1]);
@@ -543,12 +541,44 @@
 			this.eigs.y = parseFloat(temp2[1]);
 			this.eigs.z = parseFloat(temp2[2]);
 			}
+			if(protocol == '#DEFAULT'){
+			//parse coordinates
+
+			temp2= lines[i+1].split(',');
+			this.coord.x = parseFloat(temp2[0]);
+			this.coord.y = parseFloat(temp2[1]);
+			this.coord.z = parseFloat(temp2[2]);
+			//parse eigenvectors matrix
+			temp2= lines[i+2].split(',');
+			this.xx = parseFloat(temp2[0]);
+			this.xy = parseFloat(temp2[1]);
+			this.xz = parseFloat(temp2[2]);
+			
+			temp2= lines[i+3].split(',');
+			this.yx = parseFloat(temp2[0]);
+			this.yy = parseFloat(temp2[1]);
+			this.yz = parseFloat(temp2[2]);
+			
+			temp2= lines[i+4].split(',');
+			this.zx = parseFloat(temp2[0]);
+			this.zy = parseFloat(temp2[1]);
+			this.zz = parseFloat(temp2[2]);
+			
+			//parse eigenvalues
+			temp2= lines[i+5].split(',');
+			this.eigs.x = parseFloat(temp2[0]);
+			this.eigs.y = parseFloat(temp2[1]);
+			this.eigs.z = parseFloat(temp2[2]);
+			}
+			
+			
+			
 			/*
 				One line for each matrix
 			*/
 			else if(protocol == '#ONELINEPERMATRIX'){
 			//parse coordinates
-			console.log(i);
+
 			temp2= lines[i].split(',');
 			this.coord.x = parseFloat(temp2[0]);
 			this.coord.y = parseFloat(temp2[1]);
@@ -576,23 +606,25 @@
 		
 		
 		padding = 15; //15
-		first = generated*lineRatio;
+		first = generated*info.lineRatio;
+		console.log(first);
 		//for ( var i = first; i < (first+5000) && nMatrices >  generated; i+=5, generated++ ) {	
-		for ( var i = first; i < (first+5000) && nMatrices >  generated; i++, generated++ ) {	
-			var parsed = new parser(lines,i); // <- the magic happens here!
+		for ( var i = first; i < (first+5000) && info.nMatrices > generated; i+=info.lineRatio, generated++ ) {	
+			var parsed = new parser(lines, i, info.protocol); // <- the magic happens here!
 			
 			/*	SETTING POSITION	*/ 
 			/*
 				Automatic centering is usefull with DTI data.
 				For plotting functions, it should be necessary to force center to (0,0,0)
 			*/						
-			position.x = parsed.coord.x - center.x;
-			position.y = parsed.coord.y - center.y;
-			position.z = parsed.coord.z - center.z;
+			position.x = parsed.coord.x - info.center.x;
+			position.y = parsed.coord.y - info.center.y;
+			position.z = parsed.coord.z - info.center.z;
 		
 			position.multiplyScalar(radius);
 			position.multiplyScalar(padding);			
-
+			//console.log(parsed);
+			//console.log(position);
 			xx = parsed.xx;
 			xy = parsed.xy;
 			xz = parsed.xz;
@@ -746,11 +778,11 @@
 				THREE.GeometryUtils.merge(  mergedGeo, ellipsoid );
 			//}
 		}
-		if( nMatrices !== generated){
-			setTimeout(function(){	drawBrainEllipsoids(lines, nMatrices, generated, maxDet, center, protocol, lineRatio);	}, 0);
+		if( info.nMatrices !== generated){
+			setTimeout(function(){	drawBrainEllipsoids(lines, generated, info); }, 0);
 			
 		}				
-		if( nMatrices === generated ){
+		if( info.nMatrices === generated ){
 			document.getElementById("generationMsg").innerHTML	= generated+ " voxels analysed";	
 			var drawnObject = new THREE.Mesh( mergedGeo, defaultMaterial );
 			scene.add( drawnObject );					
