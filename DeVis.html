@@ -60,7 +60,7 @@
 		  if (evt.target.readyState == FileReader.DONE) { // DONE == 2
 			var lines = evt.target.result.split('\n');
 			n = lines.length-1;
-			n = n/5;
+			n = n;
 			maxDet = getMaxDet(lines, n);
 			//maxTrace = getMaxTr(lines, n);
 			center = getCenter(lines, n);			
@@ -386,7 +386,8 @@
 	function getMaxDet(lines, nMatrices){
 		document.getElementById("generationMsg").innerHTML	= "Processing...";
 		var det = [];
-		for ( var i = 4; i < nMatrices*5; i=i+5 ) {
+		//for ( var i = 4; i < nMatrices*5; i=i+5 ) {
+		for ( var i = 4; i < nMatrices; i=i+1 ) {
 			temp2= lines[i].split(',');
 			det = det.concat( (parseFloat(temp2[0])*parseFloat(temp2[1])*parseFloat(temp2[2]))*1000);
 		}
@@ -399,7 +400,8 @@
 	
 	function getCenter(lines, nMatrices){
 		var centerPosition = new THREE.Vector3();
-		for (var i = 0; i < nMatrices*5; i=i+5 ) {
+		//for (var i = 0; i < nMatrices*5; i=i+5 ) {
+		for (var i = 0; i < nMatrices; i=i+1 ) {
 			currentCoordinates = lines[i].split(',');
 			centerPosition.x = centerPosition.x + parseInt(currentCoordinates[0])/nMatrices;
 			centerPosition.y = centerPosition.y + parseInt(currentCoordinates[1])/nMatrices;
@@ -463,6 +465,7 @@
 			/*
 				ELLIPSOIDS DEFAULT
 			*/			
+			if(0){
 			//parse coordinates
 			temp2= lines[i].split(',');
 			this.coord.x = parseFloat(temp2[0]);
@@ -488,14 +491,43 @@
 			temp2= lines[i+4].split(',');
 			this.eigs.x = parseFloat(temp2[0]);
 			this.eigs.y = parseFloat(temp2[1]);
-			this.eigs.z = parseFloat(temp2[2]);			
+			this.eigs.z = parseFloat(temp2[2]);
+			}
+			/*
+				One line for each matrix
+			*/
+			else if(1){
+			//parse coordinates
+			temp2= lines[i].split(',');
+			this.coord.x = parseFloat(temp2[0]);
+			this.coord.y = parseFloat(temp2[1]);
+			this.coord.z = parseFloat(temp2[2]);
+			
+			//parse eigenvectors matrix
+			this.xx = parseFloat(temp2[3]);
+			this.xy = parseFloat(temp2[4]);
+			this.xz = parseFloat(temp2[5]);
+			
+			this.yx = parseFloat(temp2[6]);
+			this.yy = parseFloat(temp2[7]);
+			this.yz = parseFloat(temp2[8]);
+			
+			this.zx = parseFloat(temp2[9]);
+			this.zy = parseFloat(temp2[10]);
+			this.zz = parseFloat(temp2[11]);
+			
+			//parse eigenvalues
+			this.eigs.x = parseFloat(temp2[12]);
+			this.eigs.y = parseFloat(temp2[13]);
+			this.eigs.z = parseFloat(temp2[14]);
+			}
 		}
 		
 		
 		padding = 15; //15
 		first = generated*5;
-		for ( var i = first; i < (first+5000) && nMatrices >  generated; i+=5, generated++ ) {	
-
+		//for ( var i = first; i < (first+5000) && nMatrices >  generated; i+=5, generated++ ) {	
+		for ( var i = first; i < (first+5000) && nMatrices >  generated; i++, generated++ ) {	
 			var parsed = new parser(lines,i); // <- the magic happens here!
 			
 			/*	SETTING POSITION	*/ 
