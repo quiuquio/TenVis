@@ -59,12 +59,12 @@
 		reader.onloadend = function(evt) {
 		  if (evt.target.readyState == FileReader.DONE) { // DONE == 2
 			var lines = evt.target.result.split('\n');
-			n = lines.length-1;
+			/*n = lines.length-1;
 			n = n;
 			maxDet = getMaxDet(lines, n);
 			//maxTrace = getMaxTr(lines, n);
-			center = getCenter(lines, n);			
-			drawBrain(lines, n, 0, maxDet,center);
+			//center = getCenter(lines, n);*/			
+			drawBrain(lines);
 			// TODO: maxDet and center could be computed into drawBrain or a dedicated analys function
 		  }
 		};
@@ -419,9 +419,13 @@
 			start = 0;
 			stop = 1;
 		}
-		else {
+		else if(protocol == '#DEFAULT') {
 			start = 1;
 			stop = 0;
+		}
+		else if(protocol == '#ONELINEPERMATRIX'){
+			start = 1;
+			stop = -1;
 		}
 		for (var i = start; i+stop < (nMatrices*lineRatio); i=i+lineRatio ) {
 			currentCoordinates = lines[i].split(',');
@@ -538,7 +542,8 @@
 			this.eigs.y = parseFloat(temp2[1]);
 			this.eigs.z = parseFloat(temp2[2]);
 			}
-			if(protocol == '#DEFAULT'){
+			
+			else if(protocol == '#DEFAULT'){
 			//parse coordinates
 
 			temp2= lines[i+1].split(',');
@@ -576,7 +581,7 @@
 			else if(protocol == '#ONELINEPERMATRIX'){
 			//parse coordinates
 
-			temp2= lines[i].split(',');
+			temp2= lines[i+1].split(',');
 			this.coord.x = parseFloat(temp2[0]);
 			this.coord.y = parseFloat(temp2[1]);
 			this.coord.z = parseFloat(temp2[2]);
@@ -608,7 +613,6 @@
 		//for ( var i = first; i < (first+5000) && nMatrices >  generated; i+=5, generated++ ) {	
 		for ( var i = first; i < (first+5000) && info.nMatrices > generated; i+=info.lineRatio, generated++ ) {	
 			var parsed = new parser(lines, i, info.protocol); // <- the magic happens here!
-			
 			/*	SETTING POSITION	*/ 
 			/*
 				Automatic centering is usefull with DTI data.
