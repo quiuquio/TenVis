@@ -40,6 +40,9 @@
 		</style>
 	</head>
 	<script>
+		/*
+			testing FILE API browser support
+		*/
 		if (window.File && window.FileReader && window.FileList && window.Blob) {
 		  // Great success! All the File APIs are supported.
 		} else {
@@ -55,17 +58,11 @@
 	function readBlob2(file) {
 		var lines;
 		var reader = new FileReader();
-		//Se usiamo onloadend, dobbiamo controllare il readystate
+		//If we use onloadend, we must check for the ready state
 		reader.onloadend = function(evt) {
 		  if (evt.target.readyState == FileReader.DONE) { // DONE == 2
-			var lines = evt.target.result.split('\n');
-			/*n = lines.length-1;
-			n = n;
-			maxDet = getMaxDet(lines, n);
-			//maxTrace = getMaxTr(lines, n);
-			//center = getCenter(lines, n);*/			
+			var lines = evt.target.result.split('\n');			
 			drawBrain(lines);
-			// TODO: maxDet and center could be computed into drawBrain or a dedicated analys function
 		  }
 		};
 		reader.readAsText(file);
@@ -667,9 +664,9 @@
 				ll = (l.x+l.y+l.z)/3;
 				fa = Math.sqrt(3*(Math.pow((l.x-ll),2)+Math.pow((l.y-ll),2)+Math.pow((l.z-ll),2)));
 				fa = fa/(Math.sqrt(2*(Math.pow(l.x,2)+Math.pow(l.y,2)+Math.pow(l.z,2))));
-				r = fa * Math.abs(mat[0]) + (0.8-fa); //hack
-				g = fa * Math.abs(mat[4]) + (0.8-fa); //hack
-				b = fa * Math.abs(mat[8]) + (0.8-fa); //hack
+				r = fa * Math.abs(mat[0]) + (0.8-fa); //0.8 is a hack
+				g = fa * Math.abs(mat[4]) + (0.8-fa); //0.8 is a hack
+				b = fa * Math.abs(mat[8]) + (0.8-fa); //0.8 is a hack
 				break;
 			case 'Composition':
 				e1 = new THREE.Vector3( xx, yx, zx);
@@ -706,9 +703,9 @@
 				//Determinant mapping - Cyan/Grey scale
 				l = scale;
 				det = l.x*l.y*l.z;											
-				r = 1 - Math.log(0.5+(det/maxDet));
-				g = 1 - Math.log(0.2+(det/maxDet));
-				b = 1 - Math.log(0.2+(det/maxDet));
+				r = 1 - Math.log(0.5+(det/info.maxDet));
+				g = 1 - Math.log(0.2+(det/info.maxDet));
+				b = 1 - Math.log(0.2+(det/info.maxDet));
 				break;
 			case 'FA':
 				//Fractional Anisotropy mapping - red/grey scale
@@ -743,9 +740,9 @@
 				cp = (2*(l.y-l.z))/(l.x+l.y+l.z);
 				cs = (3*l.z)/(l.x+l.y+l.z);
 				
-				r = ((fa * Math.abs(mat[0]) + (0.75-fa)) + (1-Math.log(0.5+(det/maxDet))) + (Math.sqrt(cl)) + (Math.sqrt(fa)))/4;
-				g = ((fa * Math.abs(mat[4]) + (0.75-fa)) + (1-Math.log(0.2+(det/maxDet))) + (Math.sqrt(cp)) + (fa))/4;
-				b = ((fa * Math.abs(mat[8]) + (0.75-fa)) + (1-Math.log(0.2+(det/maxDet))) + (cs) + (fa))/4;
+				r = ((fa * Math.abs(mat[0]) + (0.75-fa)) + (1-Math.log(0.5+(det/info.maxDet))) + (Math.sqrt(cl)) + (Math.sqrt(fa)))/4;
+				g = ((fa * Math.abs(mat[4]) + (0.75-fa)) + (1-Math.log(0.2+(det/info.maxDet))) + (Math.sqrt(cp)) + (fa))/4;
+				b = ((fa * Math.abs(mat[8]) + (0.75-fa)) + (1-Math.log(0.2+(det/info.maxDet))) + (cs) + (fa))/4;
 				break;					
 			}
 
