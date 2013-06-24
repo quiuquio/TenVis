@@ -161,7 +161,7 @@
 
 		//projector = new THREE.Projector();
 
-		renderer = new THREE.WebGLRenderer( { 	antialias: true,
+		renderer = new THREE.WebGLRenderer( { antialias: true //,
 												//preserveDrawingBuffer: true   // required to support .toDataURL()
 											 } );
 		//renderer.autoClear = false
@@ -451,6 +451,9 @@
 		return max_of_array;
 	}*/
 	
+	/*
+		this class handles provides statistical information about the data that should be presented.
+	*/
 	var fileInfo = function(lines){
 		this.protocol = lines[0];
 		if (this.protocol == '#DEFAULT'){ // five lines per matrix: 1: cord; 2,3,4: matrix; 5: eigenvalues; 
@@ -471,7 +474,10 @@
 		this.maxDet = getMaxDet(lines, this.nMatrices, this.lineRatio, this.protocol);
 	}
 	
-	
+	/*
+		this function decides how to draw the tensors.
+		TODO: change name perhaps? drawBrain -> drawTensors
+	*/
 	function drawBrain(lines){
 		var info = new fileInfo(lines);
 		if (drawEllipsoids===true){
@@ -484,7 +490,10 @@
 	}	
 	
 
-	
+	/*
+		Draw tensors using one ellipsoid for each tensor. The are drawn with the THREE.SphereGeometry method and are merged together 
+		in order to reduce CPU-GPU comunications.
+	*/
 	function drawBrainEllipsoids(lines, generated, info){
 		var position = new THREE.Vector3();
 		radius = 1;
@@ -603,7 +612,10 @@
 			}
 		}
 		
-		
+		/*
+			the padding variable is needed to keed the glyphs from being drawn one inside the other.
+			TODO: Allow automatic padding. It should depend from the biggest eigenvalue on the dataset.
+		*/
 		padding = 15; //15
 		first = generated*info.lineRatio;
 
