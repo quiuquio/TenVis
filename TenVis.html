@@ -659,7 +659,9 @@
 		switch(colorMapping){
 			
 			case 'Default':
-				//FRACTIONAL ANISOTROPY + DIRECTIONAL color mapping
+				/*
+					FRACTIONAL ANISOTROPY + DIRECTIONAL color mapping
+				*/
 				l = scale;
 				ll = (l.x+l.y+l.z)/3;
 				fa = Math.sqrt(3*(Math.pow((l.x-ll),2)+Math.pow((l.y-ll),2)+Math.pow((l.z-ll),2)));
@@ -669,6 +671,10 @@
 				b = fa * Math.abs(mat[8]) + (0.8-fa); //0.8 is a hack
 				break;
 			case 'Composition':
+				/*
+					Here we try a composition of eigenvectors, were each of them is weiged according to their eigenvalues.
+					Results are not very correct at the moment because for example v1+v2+v3 != v1-v2+v3
+				*/
 				e1 = new THREE.Vector3( xx, yx, zx);
 				e2 = new THREE.Vector3( xy, yy, zy);
 				e3 = new THREE.Vector3( xz, yz, zz);
@@ -691,6 +697,9 @@
 				b = fa * Math.abs(v.z) + (1-fa);
 				break;
 			case 'NonAbs':
+				/* 
+					Similar to the default colormapping but without taking the absolute value of the principal vector. 
+				*/
 				l = scale;
 				ll = (l.x+l.y+l.z)/3;
 				fa = Math.sqrt(3*(Math.pow((l.x-ll),2)+Math.pow((l.y-ll),2)+Math.pow((l.z-ll),2)));
@@ -786,6 +795,10 @@
 		}
 	}
 	
+	/*	Draws tensors using a certain number of particles for each matrix. The particles are drawn on the surface of an
+		ellipsoid, but their distribution is not uniform.
+		TODO: this method is not updated with the new protocols.
+	*/
 	function drawBrainParticles(lines, nMatrices, generated, maxDet, center){
 		var geometry = new THREE.Geometry();
 		var position = new THREE.Vector4();
@@ -883,7 +896,7 @@
 	
 	
 	
-
+	//mouse event listener
 	function onMouseMove( e ) {
 
 		mouse.x = e.clientX;
