@@ -126,7 +126,9 @@
 
 	init();
 	animate();
-
+	/**
+	*TODO
+	*/
 	function init() {
 		
 		container = document.getElementById( "container" );
@@ -207,7 +209,9 @@
 		var mergedGeo	= new THREE.Geometry();
 		
 		//GUI 
-
+	/**
+	*TODO
+	*/
 	var parameters = function() {
 		//this.message = 'dat.gui';
 		/*this.speed = 0.8;
@@ -228,7 +232,9 @@
 		this.bgColor = "#222222";
 	};
 	
-	
+	/**
+	*TODO
+	*/
 	window.onload = function() {
 		var params = new parameters();
 		var gui = new dat.GUI();
@@ -279,11 +285,16 @@
 			colorMapping = value;
 		});
 		
+		/**
+		*TODO
+		*/
 		function changeBackground() {
 		   document.body.style.background = params.bgColor;
 		}
 		
-		
+		/**
+		*	TODO
+		*/
 		function setResolution() {
 			if ( params.resol != REST ) {
 				REST = params.resol;
@@ -291,18 +302,27 @@
 			}
 		}    		
 		
+		/**
+		*	TODO
+		*/
 		function toggleEllipsoids() {
 			if (params.Ellispsoid != drawEllipsoids){
 					drawEllipsoids = params.Ellispsoid;
 			}
 		}
 		
+		/**
+		*	TODO
+		*/
 		function toggleParticles() {
 			if (params.Particles != drawParticles){
 					drawParticles = params.Particles;
 			}
 		}
-				
+		
+		/**
+		*	TODO
+		*/
 		function togglePlane() {
 			if ( params.floorVisible === false) {
 				if ( floor ) { floor.visible = false;	}
@@ -322,7 +342,9 @@
 			}	
 		}
 		
-				
+		/**
+		*	TODO
+		*/	
 		/*updates controls to actual camera position and camera lookat coordinates*/
 		var update = function() {
 
@@ -368,7 +390,10 @@
 				
 
 	}
-			
+	
+	/**
+	*	TODO
+	*/
 	function applyVertexColors( g, c ) {
 
 		g.faces.forEach( function( f ) {
@@ -380,6 +405,9 @@
 
 	}
 	
+	/**
+	*	TODO: documentation and set an error message for invalid messages
+	*/
 	function getMaxDet(lines, nMatrices, lineRatio, protocol){
 		document.getElementById("generationMsg").innerHTML	= "Processing...";
 		var det = [];
@@ -408,7 +436,9 @@
 		return max_of_array;
 	}
 	
-	
+	/**
+	*	TODO
+	*/
 	function getCenter(lines, nMatrices, lineRatio, protocol){
 		var centerPosition = new THREE.Vector3();
 		//for (var i = 0; i < nMatrices*5; i=i+5 ) {
@@ -454,6 +484,9 @@
 	/*
 		this class handles provides statistical information about the data that should be presented.
 	*/
+	/**
+	*	TODO
+	*/
 	var fileInfo = function(lines){
 		this.protocol = lines[0];
 		if (this.protocol == '#DEFAULT'){ // five lines per matrix: 1: cord; 2,3,4: matrix; 5: eigenvalues; 
@@ -478,6 +511,9 @@
 		this function decides how to draw the tensors.
 		TODO: change name perhaps? drawBrain -> drawTensors
 	*/
+	/**
+	*	TODO
+	*/
 	function drawBrain(lines){
 		var info = new fileInfo(lines);
 		if (drawEllipsoids===true){
@@ -493,6 +529,9 @@
 	/*
 		Draw tensors using one ellipsoid for each tensor. The are drawn with the THREE.SphereGeometry method and are merged together 
 		in order to reduce CPU-GPU comunications.
+	*/
+	/**
+	*	TODO
 	*/
 	function drawBrainEllipsoids(lines, generated, info){
 		var position = new THREE.Vector3();
@@ -513,6 +552,9 @@
 		defaultMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff, vertexColors: THREE.VertexColors	} );
 		//defaultMaterial = new THREE.MeshNormalMaterial({ } );
 		
+		/**
+		*	TODO and move it outside the function
+		*/
 		var parser = function(lines, i, protocol){
 			this.coord = new THREE.Vector3();
 			this.eigs = new THREE.Vector3();
@@ -667,7 +709,10 @@
 			scale.z = parsed.eigs.z * 10 + 1;
 			
 			L = [ scale.x, scale.y, scale.z];
-
+		
+		/**
+		*	TODO: create a callable function for colorMappings
+		*/
 		switch(colorMapping){
 			
 			case 'Default':
@@ -811,6 +856,9 @@
 		ellipsoid, but their distribution is not uniform.
 		TODO: this method is not updated with the new protocols.
 	*/
+	/**
+	*	TODO
+	*/
 	function drawBrainParticles(lines, nMatrices, generated, maxDet, center){
 		var geometry = new THREE.Geometry();
 		var position = new THREE.Vector4();
@@ -909,13 +957,19 @@
 	
 	
 	//mouse event listener
+	/**
+	*	TODO
+	*/
 	function onMouseMove( e ) {
 
 		mouse.x = e.clientX;
 		mouse.y = e.clientY;
 
 	}
-
+	
+	/**
+	*	TODO
+	*/
 	function animate() {
 
 		requestAnimationFrame( animate );
@@ -925,7 +979,9 @@
 
 	}
 
-
+	/**
+	*	TODO
+	*/
 	function render() {
 
 		controls.update();

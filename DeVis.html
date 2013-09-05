@@ -61,8 +61,19 @@
 		//If we use onloadend, we must check for the ready state
 		reader.onloadend = function(evt) {
 		  if (evt.target.readyState == FileReader.DONE) { // DONE == 2
-			var lines = evt.target.result.split('\n');			
+			var lines = evt.target.result.split('\n');		
+			/*
+			var start = +new Date();  // log start timestamp
+			function1();
+			var end =  +new Date();  // log end timestamp
+			var diff = end - start;
+			*/
+			
+			var st = +new Date();  // log start timestamp
 			drawBrain(lines);
+			var en =  +new Date();  // log end timestamp
+			var diffs = en - st;
+			console.log(diffs);
 		  }
 		};
 		reader.readAsText(file);
@@ -275,7 +286,7 @@
 		gui.addColor(params, 'bgColor').onChange( changeBackground );
 		
 		
-		gui.add( params, 'Colormap', [ 'Default', 'NonAbs', 'Composition','Determinant', 'FA', 'LPS', 'Experimental'] ).onChange( function (value){
+		gui.add( params, 'Colormap', [ 'Default', 'NonAbs', 'Composition','Determinant', 'FA', 'LPS', 'Experimental', 'EigenRGB'] ).onChange( function (value){
 			colorMapping = value;
 		});
 		
@@ -484,27 +495,22 @@
 	}	
 	
 
+	//globals for drawBrainEllipsoids()
+	var position = new THREE.Vector3();
+	var radius = 1;
+	var rotation = new THREE.Euler();		
 	
-	function drawBrainEllipsoids(lines, generated, info){
-		var position = new THREE.Vector3();
-		radius = 1;
-		var rotation = new THREE.Vector3();		
-		
-		var geom = new THREE.SphereGeometry( radius, RESP, REST ); 
+	var geom = new THREE.SphereGeometry( radius, RESP, REST ); 
 
-		//var geom = new THREE.SphereGeometry( radius,8, 4 );
-		var ellipsoid = new THREE.Mesh( geom );
-		
-		var color = new THREE.Color( 0xff0000 );
-		var scale = new THREE.Vector3();
-		
-		document.getElementById("generationMsg").innerHTML	= (info.nMatrices-generated)+ " voxels to generate";
-		
-		//defaultMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff, shading: THREE.FlatShading, vertexColors: THREE.VertexColors	} );
-		defaultMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff, vertexColors: THREE.VertexColors	} );
-		//defaultMaterial = new THREE.MeshNormalMaterial({ } );
-		
-		var parser = function(lines, i, protocol){
+	//var geom = new THREE.SphereGeometry( radius,8, 4 );
+	var ellipsoid = new THREE.Mesh( geom );
+	
+	var color = new THREE.Color( 0xff0000 );
+	var scale = new THREE.Vector3();
+	var padding = 15; //15
+	defaultMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff, vertexColors: THREE.VertexColors	} );
+	
+	var parser = function(lines, i, protocol){
 			this.coord = new THREE.Vector3();
 			this.eigs = new THREE.Vector3();
 			/*
@@ -602,9 +608,14 @@
 			this.eigs.z = parseFloat(temp2[14]);
 			}
 		}
+	
+	function drawBrainEllipsoids(lines, generated, info){		
+		document.getElementById("generationMsg").innerHTML	= (info.nMatrices-generated)+ " voxels to generate";
 		
+		//defaultMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff, shading: THREE.FlatShading, vertexColors: THREE.VertexColors	} );
+		//defaultMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff, vertexColors: THREE.VertexColors	} );
+		//defaultMaterial = new THREE.MeshNormalMaterial({ } );
 		
-		padding = 15; //15
 		first = generated*info.lineRatio;
 
 		//for ( var i = first; i < (first+5000) && nMatrices >  generated; i+=5, generated++ ) {	
@@ -743,7 +754,15 @@
 				r = ((fa * Math.abs(mat[0]) + (0.75-fa)) + (1-Math.log(0.5+(det/info.maxDet))) + (Math.sqrt(cl)) + (Math.sqrt(fa)))/4;
 				g = ((fa * Math.abs(mat[4]) + (0.75-fa)) + (1-Math.log(0.2+(det/info.maxDet))) + (Math.sqrt(cp)) + (fa))/4;
 				b = ((fa * Math.abs(mat[8]) + (0.75-fa)) + (1-Math.log(0.2+(det/info.maxDet))) + (cs) + (fa))/4;
-				break;					
+				break;	
+			case 'EigenRGB':
+				l = scale;
+				scale.x = 10;
+				scale.y = scale.x;
+				scale.z = scale.x;
+				r = parsed.eigs.x;
+				g = parsed.eigs.y;
+				b = parsed.eigs.z;
 			}
 
 			color.setRGB( r,g,b );
@@ -751,7 +770,7 @@
 			
 			ellipsoid.position.copy( position );
 			rotM.transpose(); // see comment under declaration of rotM.
-			rotation.setEulerFromRotationMatrix( rotM, 'ZYX' );
+			rotation.setFromRotationMatrix( rotM, 'ZYX' );
 			ellipsoid.rotation.copy(rotation);
 			
 			//make all spheres
