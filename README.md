@@ -1,8 +1,8 @@
-TenVis
+TenVis (Tensor Visualization tool)
 ====== 
 TenVis can help you analyze tensors or 3x3 matrices using ellipsoids.
 Different color mappings are given.
-This project was created as part of my Computer Science thesis work and is mostly aimed on Diffusion Tensor Imaging (DTI) visualization.
+This project was created as part of my Computer Science thesis work and is mostly aimed on Diffusion Tensor Imaging visualization.
 
 Version
 -
