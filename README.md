@@ -17,7 +17,7 @@ TenVis uses javascript, HTML5, WebGL and the amazing [Three.js] library.
 Installation
 --------------
 
-No installation needed, it's all javascript! Just click the `TenVis.html` file and it works automagically. Things should work on any WebGL enabled browser, wich means no IE support for the time being.
+No installation needed, it's all javascript! Just click the `TenVis.html` file and it works automagically. Things should work on any WebGL enabled browser, which means no IE support for the time being.
 
 How to use
 -
