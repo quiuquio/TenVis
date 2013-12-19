@@ -11,6 +11,8 @@
 
 		<script src="js/stats.min.js"></script>
 
+		<script type="text/javascript" src="demoData.js"></script>
+
 		<script type="text/javascript" src="js/THREEx.screenshot.js"></script>
 
 		<script type="text/javascript" src="js/dat.gui.js"></script>
@@ -73,6 +75,9 @@
 			var diff = end - start;
 			*/
 
+			console.log(lines.length);
+			lines = theBrain;
+			console.log(theBrain.length);
 			var st = +new Date();  // log start timestamp
 			drawBrain(lines);
 			var en =  +new Date();  // log end timestamp
@@ -475,16 +480,16 @@
 		this.protocol = lines[0];
 		if (this.protocol == '#DEFAULT'){ // five lines per matrix: 1: cord; 2,3,4: matrix; 5: eigenvalues;
 			this.lineRatio = 5;
-			this.nMatrices = (lines.length-2)/this.lineRatio;
+			this.nMatrices = (lines.length-1)/this.lineRatio;
 		}
 		else if(this.protocol == '#ONELINEPERMATRIX'){
 			this.lineRatio = 1;
-			this.nMatrices = lines.length-2;
+			this.nMatrices = lines.length-1;
 		}
 		else{ // no protocol specified. DEFAULT behaviour
 			this.protocol = '#NOPROTOCOL';
 			this.lineRatio = 5;
-			this.nMatrices = (lines.length-1)/this.lineRatio;
+			this.nMatrices = (lines.length)/this.lineRatio;
 		}
 		this.center = THREE.Vector3;
 		this.center = getCenter(lines, this.nMatrices, this.lineRatio, this.protocol);
@@ -707,7 +712,7 @@
 			//}
 		}
 		if( info.nMatrices !== generated){
-			setTimeout(function(){drawBrainEllipsoids(lines, generated, info); }, 0);
+			setTimeout(function(){	drawBrainEllipsoids(lines, generated, info); }, 0);
 
 		}
 		if( info.nMatrices === generated ){
@@ -812,7 +817,7 @@
 		scene.add( mesh );
 	}
 
-  function getColor(l, mat){
+    function getColor(l, mat){
     switch(colorMapping){
 
       case 'Default':
@@ -933,6 +938,8 @@
 		renderer.render( scene, camera );
 
 	}
+
+	drawBrain(theBrain);
 
 </script>
 
