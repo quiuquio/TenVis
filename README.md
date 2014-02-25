@@ -57,10 +57,15 @@ while the last line contains the eigenvalues of the matrix.
 
 Snapshots
 -
+Whole brain tensors
 ![alt text](https://dl.dropboxusercontent.com/u/1056837/TenVis/imgs/5.PNG "Brain1")
+Same as before, but using a filter to show only highly anisotropic voxels.
 ![alt text](https://dl.dropboxusercontent.com/u/1056837/TenVis/imgs/6.PNG "Brain2")
+Result of gradualy interpolating the three tensors on the corner of the triangle. Colors are related to tensor orientation.
 ![alt text](https://dl.dropboxusercontent.com/u/1056837/TenVis/imgs/compositecolor-Karcher.PNG "3 tensors interpolation")
+MRI brain slice. Different color intensity represents different diffusion in the tissue.
 ![alt text](https://dl.dropboxusercontent.com/u/1056837/TenVis/imgs/detLpY.PNG "Brain DTI slice 1")
+Image using an experimental filter for color coding. Highlighting diffusion, anisotropy and tissue direction at the same time.
 ![alt text](https://dl.dropboxusercontent.com/u/1056837/TenVis/imgs/LPSGeoAVERA.PNG "Brain DTI slice 2")
 
 Acknowledgements
